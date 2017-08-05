@@ -1,6 +1,7 @@
 package net.orpiske.hhp.plot;
 
 import org.HdrHistogram.HistogramLogProcessor;
+import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -20,7 +21,7 @@ public class HdrLogProcessorWrapper {
                 "-csv"
         };
 
-        String csvFile = path.replace(".hdr", ".csv");
+        String csvFile = FilenameUtils.removeExtension(path) + ".csv";
         PrintStream oldOut = System.out;
 
         try (FileOutputStream fileStream = new FileOutputStream(csvFile)) {
