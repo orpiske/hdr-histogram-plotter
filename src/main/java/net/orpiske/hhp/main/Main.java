@@ -36,7 +36,6 @@ public class Main {
 
         options.addOption("h", "help", false, "prints the help");
         options.addOption("f", "file", true, "file to plot");
-        options.addOption("n", "name", true, "file to plot");
 
         try {
             cmdLine = parser.parse(options, args);
