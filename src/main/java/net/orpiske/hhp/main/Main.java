@@ -6,12 +6,16 @@ import net.orpiske.hhp.plot.HdrReader;
 import net.orpiske.hhp.plot.Plotter;
 import net.orpiske.hhp.utils.Constants;
 import org.apache.commons.cli.*;
+import org.apache.commons.io.FilenameUtils;
+
+import java.io.File;
 
 public class Main {
     private static CommandLine cmdLine;
     private static Options options;
 
     private static String fileName;
+    private static String seriesName;
 
     /**
      * Prints the help for the action and exit
@@ -32,6 +36,7 @@ public class Main {
 
         options.addOption("h", "help", false, "prints the help");
         options.addOption("f", "file", true, "file to plot");
+        options.addOption("n", "name", true, "file to plot");
 
         try {
             cmdLine = parser.parse(options, args);
@@ -63,8 +68,9 @@ public class Main {
 
             HdrData hdrData = reader.read(csvFile);
 
-// Plotter
-            Plotter.plot(hdrData.getPercentile(), hdrData.getValue());
+            // Plotter
+            Plotter plotter = new Plotter(FilenameUtils.removeExtension(fileName));
+            plotter.plot(hdrData.getPercentile(), hdrData.getValue());
 
             System.exit(0);
         } catch (Exception e) {
