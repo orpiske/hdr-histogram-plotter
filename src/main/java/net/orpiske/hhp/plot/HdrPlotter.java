@@ -15,11 +15,11 @@ import java.io.IOException;
 import java.util.List;
 
 
-public class Plotter {
+public class HdrPlotter {
     private static final String SERIES_NAME = "Percentiles range";
     private String baseName;
 
-    public Plotter(final String baseName) {
+    public HdrPlotter(final String baseName) {
         this.baseName = baseName;
     }
 

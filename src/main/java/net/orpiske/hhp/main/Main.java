@@ -2,13 +2,11 @@ package net.orpiske.hhp.main;
 
 import net.orpiske.hhp.plot.HdrData;
 import net.orpiske.hhp.plot.HdrLogProcessorWrapper;
+import net.orpiske.hhp.plot.HdrPlotter;
 import net.orpiske.hhp.plot.HdrReader;
-import net.orpiske.hhp.plot.Plotter;
 import net.orpiske.hhp.utils.Constants;
 import org.apache.commons.cli.*;
 import org.apache.commons.io.FilenameUtils;
-
-import java.io.File;
 
 public class Main {
     private static CommandLine cmdLine;
@@ -67,8 +65,8 @@ public class Main {
 
             HdrData hdrData = reader.read(csvFile);
 
-            // Plotter
-            Plotter plotter = new Plotter(FilenameUtils.removeExtension(fileName));
+            // HdrPlotter
+            HdrPlotter plotter = new HdrPlotter(FilenameUtils.removeExtension(fileName));
             plotter.plot(hdrData.getPercentile(), hdrData.getValue());
 
             System.exit(0);
