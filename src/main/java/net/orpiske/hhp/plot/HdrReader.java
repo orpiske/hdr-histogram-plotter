@@ -6,7 +6,6 @@ import org.apache.commons.csv.CSVRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
@@ -15,7 +14,7 @@ import java.util.List;
 public class HdrReader {
     private static final Logger logger = LoggerFactory.getLogger(HdrReader.class);
 
-    public HdrData read(String filename) throws FileNotFoundException, IOException {
+    public HdrData read(String filename) throws IOException {
         Reader in = new FileReader(filename);
 
         HdrData ret = new HdrData();

@@ -26,7 +26,7 @@ public class HdrLogProcessorWrapper {
         try (FileOutputStream fileStream = new FileOutputStream(csvFile)) {
             PrintStream newOutStream = new PrintStream(fileStream);
 
-            /**
+            /*
              * By default it prints on stdout. Since it does not seem to provide an easy
              * way to save to a file via API, then just replay the stdout for saving the
              * CSV data.
@@ -37,7 +37,7 @@ public class HdrLogProcessorWrapper {
             HistogramLogProcessor processor = new HistogramLogProcessor(args);
             processor.run();
 
-            /**
+            /*
              * Restore it after use
              */
 

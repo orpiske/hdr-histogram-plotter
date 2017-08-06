@@ -54,7 +54,7 @@ public class HdrPlotter {
 
     }
 
-    public void plot99(List<Double> xData, List<Double> yData) throws IOException {
+    private void plot99(List<Double> xData, List<Double> yData) throws IOException {
         XYChart chart = buildCommonChart();
 
         /*
@@ -77,7 +77,7 @@ public class HdrPlotter {
         BitmapEncoder.saveBitmap(chart, baseName + "_99.png", BitmapEncoder.BitmapFormat.PNG);
     }
 
-    public void plot90(List<Double> xData, List<Double> yData) throws IOException {
+    private void plot90(List<Double> xData, List<Double> yData) throws IOException {
         XYChart chart = buildCommonChart();
 
         /*
@@ -100,7 +100,7 @@ public class HdrPlotter {
         BitmapEncoder.saveBitmap(chart, baseName + "_90.png", BitmapEncoder.BitmapFormat.PNG);
     }
 
-    public void plotAll(List<Double> xData, List<Double> yData) throws IOException {
+    private void plotAll(List<Double> xData, List<Double> yData) throws IOException {
 
         // Create Chart
         XYChart chart = buildCommonChart();

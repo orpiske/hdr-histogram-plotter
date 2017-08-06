@@ -10,10 +10,7 @@ import org.apache.commons.io.FilenameUtils;
 
 public class Main {
     private static CommandLine cmdLine;
-    private static Options options;
-
     private static String fileName;
-    private static String seriesName;
 
     /**
      * Prints the help for the action and exit
@@ -30,7 +27,7 @@ public class Main {
     private static void processCommand(String[] args) {
         CommandLineParser parser = new PosixParser();
 
-        options = new Options();
+        Options options = new Options();
 
         options.addOption("h", "help", false, "prints the help");
         options.addOption("f", "file", true, "file to plot");
