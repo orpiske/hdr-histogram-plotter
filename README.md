@@ -14,10 +14,23 @@ It can be used as a command-line tool or it can be integrated in other projects 
 Building
 ----
 
+To build the project run:
+
 ```
 mvn clean install
 ```
 
+To generate the delivery tarball run:
+
+```
+mvn -PDelivery clean package
+```
+
+If you maintain your own Maven repository, you can deploy this library using:
+
+```
+mvn deploy -DaltDeploymentRepository=libs-snapshot::default::http://hostname:8081/path/to/libs-snapshot-local
+```
 
 
 Using as Command Line Tool
@@ -70,13 +83,3 @@ The files are, in order:
 * Plotted PNG file for the 99th percentile
 * Plotted PNG file for the all data range
 * Intermediary CSV file that can be used elsewhere
-
-
-Deploying in Self-Maintained Maven Repository
-----
-
-If you maintain your own Maven repository, you can deploy this library using:
-
-```
-mvn deploy -DaltDeploymentRepository=libs-snapshot::default::http://hostname:8081/path/to/libs-snapshot-local
-```
