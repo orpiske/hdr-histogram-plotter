@@ -76,7 +76,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>../lib</classpathPrefix>
-                            <mainClass>net.orpiske.ucf.main.Main</mainClass>
+                            <mainClass>net.orpiske.hhp.main.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
