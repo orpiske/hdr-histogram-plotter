@@ -2,9 +2,6 @@ HDR Histogram Plotter: A Java library to plot HDR Histogram Files
 ============
 
 
-
-
-
 Introduction
 ----
 
