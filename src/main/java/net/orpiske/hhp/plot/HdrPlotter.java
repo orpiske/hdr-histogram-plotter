@@ -35,6 +35,10 @@ public class HdrPlotter {
     private static final String SERIES_NAME = "Percentiles range";
     private String baseName;
 
+    private int outputWidth = 1200;
+    private int outputHeight = 700;
+    private boolean plotGridLinesVisible = true;
+
     public HdrPlotter(final String baseName) {
         this.baseName = baseName;
     }
@@ -43,8 +47,8 @@ public class HdrPlotter {
 
         // Create Chart
         XYChart chart = new XYChartBuilder()
-                .width(1200)
-                .height(700)
+                .width(outputWidth)
+                .height(outputHeight)
                 .title("Latency by Percentile Distribution")
                 .xAxisTitle("Percentiles")
                 .yAxisTitle("Latency (milliseconds)")
@@ -54,7 +58,7 @@ public class HdrPlotter {
         chart.getStyler().setChartBackgroundColor(Color.WHITE);
         chart.getStyler().setChartTitleBoxBackgroundColor(new Color(0, 222, 0));
 
-        chart.getStyler().setPlotGridLinesVisible(true);
+        chart.getStyler().setPlotGridLinesVisible(plotGridLinesVisible);
 
         chart.getStyler().setYAxisTickMarkSpacingHint(15);
         chart.getStyler().setXAxisTickMarkSpacingHint(10);
@@ -146,5 +150,17 @@ public class HdrPlotter {
         plot90(xData, yData);
         plot99(xData, yData);
 
+    }
+
+    public void setOutputWidth(int outputWidth) {
+        this.outputWidth = outputWidth;
+    }
+
+    public void setOutputHeight(int outputHeight) {
+        this.outputHeight = outputHeight;
+    }
+
+    public void setPlotGridLinesVisible(boolean plotGridLinesVisible) {
+        this.plotGridLinesVisible = plotGridLinesVisible;
     }
 }
