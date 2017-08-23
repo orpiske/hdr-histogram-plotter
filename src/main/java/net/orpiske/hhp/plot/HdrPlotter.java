@@ -32,9 +32,10 @@ import java.io.IOException;
 import java.util.List;
 
 
+@SuppressWarnings("unused")
 public class HdrPlotter {
     private static final String SERIES_NAME = "Percentiles range";
-    private String baseName;
+    private final String baseName;
 
     private int outputWidth = 1200;
     private int outputHeight = 700;
