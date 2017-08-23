@@ -17,6 +17,7 @@
 package net.orpiske.hhp.plot;
 
 
+import net.orpiske.hhp.plot.exceptions.HdrEmptyDataSet;
 import org.knowm.xchart.BitmapEncoder;
 import org.knowm.xchart.XYChart;
 import org.knowm.xchart.XYChartBuilder;
@@ -145,7 +146,15 @@ public class HdrPlotter {
     }
 
 
-    public void plot(List<Double> xData, List<Double> yData) throws IOException {
+    public void plot(List<Double> xData, List<Double> yData) throws IOException, HdrEmptyDataSet {
+        if (xData == null || xData.size() == 0) {
+            throw new HdrEmptyDataSet("The 'X' column data set is empty");
+        }
+
+        if (yData == null || yData.size() == 0) {
+            throw new HdrEmptyDataSet("The 'Y' column data set is empty");
+        }
+
         plotAll(xData, yData);
         plot90(xData, yData);
         plot99(xData, yData);
