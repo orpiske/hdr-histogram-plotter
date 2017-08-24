@@ -83,3 +83,10 @@ The files are, in order:
 * Plotted PNG file for the 99th percentile
 * Plotted PNG file for the all data range
 * Intermediary CSV file that can be used elsewhere
+
+
+Samples
+----
+![90th percentile sample](doc/receiverd-latency_90.png)
+![99th percentile sample](doc/receiverd-latency_99.png)
+![All data range sample](doc/receiverd-latency_all.png)
