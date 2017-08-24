@@ -72,6 +72,11 @@ public class HdrPlotter {
         chart.getStyler().setPlotMargin(0);
         chart.getStyler().setPlotContentSize(.99);
 
+        chart.getStyler().setChartTitleFont(new Font("Verdana", Font.BOLD, 14));
+        chart.getStyler().setLegendFont(new Font("Verdana", Font.PLAIN, 12));
+        chart.getStyler().setAxisTitleFont(new Font("Verdana", Font.PLAIN, 12));
+        chart.getStyler().setAxisTickLabelsFont(new Font("Verdana", Font.PLAIN, 10));
+
         return chart;
 
     }
