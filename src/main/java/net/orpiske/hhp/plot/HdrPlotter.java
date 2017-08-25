@@ -96,7 +96,7 @@ public class HdrPlotter {
 
         series.setLineColor(XChartSeriesColors.BLUE);
         series.setMarkerColor(Color.LIGHT_GRAY);
-        series.setMarker(SeriesMarkers.DIAMOND);
+        series.setMarker(SeriesMarkers.NONE);
         series.setLineStyle(SeriesLines.SOLID);
 
 
@@ -119,7 +119,7 @@ public class HdrPlotter {
 
         series.setLineColor(XChartSeriesColors.BLUE);
         series.setMarkerColor(Color.LIGHT_GRAY);
-        series.setMarker(SeriesMarkers.DIAMOND);
+        series.setMarker(SeriesMarkers.NONE);
         series.setLineStyle(SeriesLines.SOLID);
 
 
@@ -144,7 +144,7 @@ public class HdrPlotter {
 
         series.setLineColor(XChartSeriesColors.BLUE);
         series.setMarkerColor(Color.LIGHT_GRAY);
-        series.setMarker(SeriesMarkers.DIAMOND);
+        series.setMarker(SeriesMarkers.NONE);
         series.setLineStyle(SeriesLines.SOLID);
 
         BitmapEncoder.saveBitmap(chart, baseName + "_all.png", BitmapEncoder.BitmapFormat.PNG);
