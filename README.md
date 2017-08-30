@@ -1,6 +1,10 @@
 HDR Histogram Plotter: A Java library to plot HDR Histogram Files
 ============
 
+Build Status
+----
+
+Build Status: [![Build Status](https://travis-ci.org/orpiske/hdr-histogram-plotter.svg?branch=master)](https://travis-ci.org/orpiske/hdr-histogram-plotter)
 
 Introduction
 ----
