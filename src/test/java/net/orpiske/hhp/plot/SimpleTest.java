@@ -40,9 +40,6 @@ public class SimpleTest {
         // HdrPlotter
         HdrPlotter plotter = new HdrPlotter(FilenameUtils.removeExtension(fileName));
         plotter.plot(hdrData.getPercentile(), hdrData.getValue());
-
-        String csvFilename = FilenameUtils.removeExtension(fileName) + ".csv";
-        String pngFilename = FilenameUtils.removeExtension(fileName) + ".png";
     }
 
 
