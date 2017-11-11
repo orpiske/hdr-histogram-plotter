@@ -49,7 +49,38 @@ Run:
 Using as Library
 ----
 
-Use:
+**Dependencies**:
+
+To use this project as library on your project you have to add my personal 
+[bintray](https://bintray.com/orpiske/libs-release/) repository to the pom.xml
+file:
+
+```
+<repositories>
+    <repository>
+        <id>orpiske-repo</id>
+        <url>https://dl.bintray.com/orpiske/libs-release</url>
+    </repository>
+</repositories>
+```
+
+Then, the library can be referenced as: 
+```
+<dependency>
+    <groupId>net.orpiske</groupId>
+    <artifactId>hdr-histogram-plotter</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+
+**Note**: replace version with the latest available version you wish to use.
+
+**API**:
+
+The API documentation (javadoc) is available [here](http://www.orpiske.net/files/javadoc/hdr-histogram-plotter-1/apidocs/). 
+Additional project documentation is available [here](http://www.orpiske.net/files/javadoc/hdr-histogram-plotter-1/).
+
+Sample usage:
 
 ```
 // HDR Converter
