@@ -8,6 +8,22 @@
     <artifactId>hdr-histogram-plotter</artifactId>
     <version>1.0.0</version>
 
+
+    <scm>
+        <developerConnection>scm:git:git@github.com:orpiske/hdr-histogram-plotter.git</developerConnection>
+        <url>https://github.com/orpiske/hdr-histogram-plotter</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>manual</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+    </licenses>
+
     <dependencies>
         <dependency>
             <groupId>commons-cli</groupId>
@@ -122,8 +138,41 @@
                             </execution>
                         </executions>
                     </plugin>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-site-plugin</artifactId>
+                        <version>3.6</version>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.apache.maven.wagon</groupId>
+                                <artifactId>wagon-ssh</artifactId>
+                                <version>3.0.0</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-release-plugin</artifactId>
+                        <version>2.5.3</version>
+                    </plugin>
                 </plugins>
             </build>
+
+            <distributionManagement>
+                <repository>
+                    <id>bintray-orpiske-libs-release</id>
+                    <name>orpiske-libs-release</name>
+                    <url>https://api.bintray.com/maven/orpiske/libs-release/hdr-histogram-plotter/;publish=1</url>
+                </repository>
+
+                <site>
+                    <id>orpiske.net</id>
+                    <name>SDM</name>
+                    <url>${orpiske.site}/files/javadoc/hdr-histogram-plotter-1</url>
+                </site>
+            </distributionManagement>
         </profile>
 
         <profile>
@@ -159,6 +208,16 @@
             </build>
         </profile>
     </profiles>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.0.0-M1</version>
+            </plugin>
+        </plugins>
+    </reporting>
 
 
 </project>
