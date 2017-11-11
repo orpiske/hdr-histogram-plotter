@@ -17,7 +17,7 @@ package net.orpiske.hhp.utils;
 
 /**
  * Application constants
- * @author Otavio R. Piske <angusyoung@gmail.com>
+ * @author Otavio R. Piske
  *
  */
 public final class Constants {

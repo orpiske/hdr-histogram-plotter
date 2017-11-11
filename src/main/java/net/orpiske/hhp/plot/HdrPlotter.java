@@ -32,6 +32,9 @@ import java.io.IOException;
 import java.util.List;
 
 
+/**
+ * The plotter for HDR histograms
+ */
 @SuppressWarnings("unused")
 public class HdrPlotter {
     private static final String SERIES_NAME = "Percentiles range";
@@ -152,6 +155,13 @@ public class HdrPlotter {
     }
 
 
+    /**
+     * Plots the HDR histogram
+     * @param xData the data for the x axis
+     * @param yData the data for tye y axis
+     * @throws IOException
+     * @throws HdrEmptyDataSet
+     */
     public void plot(List<Double> xData, List<Double> yData) throws IOException, HdrEmptyDataSet {
         if (xData == null || xData.size() == 0) {
             throw new HdrEmptyDataSet("The 'X' column data set is empty");
@@ -167,14 +177,29 @@ public class HdrPlotter {
 
     }
 
+
+    /**
+     * Sets the output width for the graph
+     * @param outputWidth the width in pixels
+     */
     public void setOutputWidth(int outputWidth) {
         this.outputWidth = outputWidth;
     }
 
+
+    /**
+     * Sets the output height for the graph
+     * @param outputHeight the height in pixels
+     */
     public void setOutputHeight(int outputHeight) {
         this.outputHeight = outputHeight;
     }
 
+
+    /**
+     * Sets the the grid lines should be visible
+     * @param plotGridLinesVisible
+     */
     public void setPlotGridLinesVisible(boolean plotGridLinesVisible) {
         this.plotGridLinesVisible = plotGridLinesVisible;
     }
