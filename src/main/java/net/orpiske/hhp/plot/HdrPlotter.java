@@ -43,9 +43,18 @@ public class HdrPlotter {
     private int outputWidth = 1200;
     private int outputHeight = 700;
     private boolean plotGridLinesVisible = true;
+    private String timeUnit = "microseconds";
 
     public HdrPlotter(final String baseName) {
         this.baseName = baseName;
+    }
+
+    public HdrPlotter(final String baseName, final String timeUnit) {
+        this.baseName = baseName;
+
+        if (timeUnit != null) {
+            this.timeUnit = timeUnit;
+        }
     }
 
     private XYChart buildCommonChart() {
@@ -56,7 +65,7 @@ public class HdrPlotter {
                 .height(outputHeight)
                 .title("Latency by Percentile Distribution")
                 .xAxisTitle("Percentiles")
-                .yAxisTitle("Latency (milliseconds)")
+                .yAxisTitle("Latency (" + this.timeUnit + ")")
                 .build();
 
         chart.getStyler().setPlotBackgroundColor(ChartColor.getAWTColor(ChartColor.WHITE));

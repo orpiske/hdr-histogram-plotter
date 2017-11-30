@@ -26,6 +26,7 @@ import org.apache.commons.io.FilenameUtils;
 public class Main {
     private static CommandLine cmdLine;
     private static String fileName;
+    private static String timeUnit;
 
     /**
      * Prints the help for the action and exit
@@ -46,6 +47,7 @@ public class Main {
 
         options.addOption("h", "help", false, "prints the help");
         options.addOption("f", "file", true, "file to plot");
+        options.addOption("t", "time-unit", true, "time unit to use (milliseconds, microseconds, etc)");
 
         try {
             cmdLine = parser.parse(options, args);
@@ -59,6 +61,11 @@ public class Main {
 
         fileName = cmdLine.getOptionValue('f');
         if (fileName == null) {
+            help(options, -1);
+        }
+
+        timeUnit = cmdLine.getOptionValue('t');
+        if (timeUnit == null) {
             help(options, -1);
         }
     }
@@ -78,7 +85,7 @@ public class Main {
             HdrData hdrData = reader.read(csvFile);
 
             // HdrPlotter
-            HdrPlotter plotter = new HdrPlotter(FilenameUtils.removeExtension(fileName));
+            HdrPlotter plotter = new HdrPlotter(FilenameUtils.removeExtension(fileName), timeUnit);
             plotter.plot(hdrData.getPercentile(), hdrData.getValue());
 
             System.exit(0);
