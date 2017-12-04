@@ -27,7 +27,7 @@ public class SimpleTest {
 
     private void plot(String fileName) throws Exception {
         // HDR Converter
-        HdrLogProcessorWrapper processorWrapper = new HdrLogProcessorWrapper();
+        HdrLogProcessorWrapper processorWrapper = new HdrLogProcessorWrapper(HdrLogProcessorWrapper.DEFAULT_UNIT_RATE);
 
 
         String csvFile = processorWrapper.convertLog(fileName);
@@ -44,7 +44,7 @@ public class SimpleTest {
 
 
     @Test
-    public void name() throws Exception {
+    public void testPlot() throws Exception {
         String fileName = this.getClass().getResource("file-01.hdr").getPath();
         plot(fileName);
 

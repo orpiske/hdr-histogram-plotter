@@ -27,6 +27,7 @@ public class Main {
     private static CommandLine cmdLine;
     private static String fileName;
     private static String timeUnit;
+    private static String unitRate;
 
     /**
      * Prints the help for the action and exit
@@ -48,6 +49,7 @@ public class Main {
         options.addOption("h", "help", false, "prints the help");
         options.addOption("f", "file", true, "file to plot");
         options.addOption("t", "time-unit", true, "time unit to use (milliseconds, microseconds, etc)");
+        options.addOption("r", "unit-rate", true, "the unit rate to use (default = 1)");
 
         try {
             cmdLine = parser.parse(options, args);
@@ -68,6 +70,11 @@ public class Main {
         if (timeUnit == null) {
             help(options, -1);
         }
+
+        unitRate = cmdLine.getOptionValue('r');
+        if (unitRate == null) {
+            unitRate = HdrLogProcessorWrapper.DEFAULT_UNIT_RATE;
+        }
     }
 
     public static void main(String[] args) {
@@ -75,7 +82,9 @@ public class Main {
 
         try {
             // HDR Converter
-            HdrLogProcessorWrapper processorWrapper = new HdrLogProcessorWrapper();
+            HdrLogProcessorWrapper processorWrapper;
+
+            processorWrapper = new HdrLogProcessorWrapper(unitRate);
 
             String csvFile = processorWrapper.convertLog(fileName);
 

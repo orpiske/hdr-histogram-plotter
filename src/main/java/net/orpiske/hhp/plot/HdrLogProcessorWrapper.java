@@ -28,11 +28,17 @@ import java.io.PrintStream;
  * just wrap it over its main method.
  */
 public class HdrLogProcessorWrapper {
+    public static final String DEFAULT_UNIT_RATE = "1";
+    private String unitRatio;
+
+    public HdrLogProcessorWrapper(String unitRatio) {
+        this.unitRatio = unitRatio;
+    }
 
     public String convertLog(String path) throws IOException {
         String args[] = {
                 "-i", path,
-                "-outputValueUnitRatio", "1",
+                "-outputValueUnitRatio", unitRatio,
                 "-csv"
         };
 
