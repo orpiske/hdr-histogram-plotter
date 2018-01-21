@@ -37,24 +37,24 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 public class HdrPlotter {
-    private static final String SERIES_NAME = "Percentiles range";
     private final String baseName;
 
     private int outputWidth = 1200;
     private int outputHeight = 700;
     private boolean plotGridLinesVisible = true;
-    private String timeUnit = "microseconds";
+
+    private ChartProperties chartProperties = new ChartProperties();
 
     public HdrPlotter(final String baseName) {
         this.baseName = baseName;
+
+        chartProperties.setyTitle("microseconds");
     }
 
     public HdrPlotter(final String baseName, final String timeUnit) {
         this.baseName = baseName;
 
-        if (timeUnit != null) {
-            this.timeUnit = timeUnit;
-        }
+        chartProperties.setyTitle(timeUnit);
     }
 
     private XYChart buildCommonChart() {
@@ -63,9 +63,9 @@ public class HdrPlotter {
         XYChart chart = new XYChartBuilder()
                 .width(outputWidth)
                 .height(outputHeight)
-                .title("Latency by Percentile Distribution")
-                .xAxisTitle("Percentiles")
-                .yAxisTitle("Latency (" + this.timeUnit + ")")
+                .title(chartProperties.getTitle())
+                .xAxisTitle(null)
+                .yAxisTitle(chartProperties.getyTitle())
                 .build();
 
         chart.getStyler().setPlotBackgroundColor(ChartColor.getAWTColor(ChartColor.WHITE));
@@ -104,14 +104,12 @@ public class HdrPlotter {
         chart.getStyler().setXAxisMin(99.0);
 
         // Series
-        XYSeries series = chart.addSeries(SERIES_NAME, xData, yData);
+        XYSeries series = chart.addSeries(chartProperties.getSeriesName(), xData, yData);
 
         series.setLineColor(XChartSeriesColors.BLUE);
         series.setMarkerColor(Color.LIGHT_GRAY);
         series.setMarker(SeriesMarkers.NONE);
         series.setLineStyle(SeriesLines.SOLID);
-
-
 
         BitmapEncoder.saveBitmap(chart, baseName + "_99.png", BitmapEncoder.BitmapFormat.PNG);
     }
@@ -127,14 +125,12 @@ public class HdrPlotter {
         chart.getStyler().setXAxisMin(90.0);
 
         // Series
-        XYSeries series = chart.addSeries(SERIES_NAME, xData, yData);
+        XYSeries series = chart.addSeries(chartProperties.getSeriesName(), xData, yData);
 
         series.setLineColor(XChartSeriesColors.BLUE);
         series.setMarkerColor(Color.LIGHT_GRAY);
         series.setMarker(SeriesMarkers.NONE);
         series.setLineStyle(SeriesLines.SOLID);
-
-
 
         BitmapEncoder.saveBitmap(chart, baseName + "_90.png", BitmapEncoder.BitmapFormat.PNG);
     }
@@ -152,7 +148,7 @@ public class HdrPlotter {
         chart.getStyler().setXAxisMin(5.0);
 
         // Series
-        XYSeries series = chart.addSeries(SERIES_NAME, xData, yData);
+        XYSeries series = chart.addSeries(chartProperties.getSeriesName(), xData, yData);
 
         series.setLineColor(XChartSeriesColors.BLUE);
         series.setMarkerColor(Color.LIGHT_GRAY);
@@ -160,7 +156,6 @@ public class HdrPlotter {
         series.setLineStyle(SeriesLines.SOLID);
 
         BitmapEncoder.saveBitmap(chart, baseName + "_all.png", BitmapEncoder.BitmapFormat.PNG);
-
     }
 
 
@@ -211,5 +206,14 @@ public class HdrPlotter {
      */
     public void setPlotGridLinesVisible(boolean plotGridLinesVisible) {
         this.plotGridLinesVisible = plotGridLinesVisible;
+    }
+
+
+    public ChartProperties getChartProperties() {
+        return chartProperties;
+    }
+
+    public void setChartProperties(ChartProperties chartProperties) {
+        this.chartProperties = chartProperties;
     }
 }
