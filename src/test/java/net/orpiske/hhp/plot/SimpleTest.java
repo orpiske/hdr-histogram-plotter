@@ -16,12 +16,13 @@
 
 package net.orpiske.hhp.plot;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.util.Properties;
 
 public class SimpleTest {
 
@@ -40,6 +41,8 @@ public class SimpleTest {
         // HdrPlotter
         HdrPlotter plotter = new HdrPlotter(FilenameUtils.removeExtension(fileName));
         plotter.plot(hdrData.getPercentile(), hdrData.getValue());
+
+        HdrPropertyWriter.writeFrom(fileName);
     }
 
 
@@ -72,5 +75,20 @@ public class SimpleTest {
         assertTrue(pngFileAll.exists());
         assertTrue(pngFileAll.isFile());
 
+
+        File propertiesFile = new File(pngFileAll.getParentFile(), "latency.properties");
+        assertTrue(propertiesFile.exists());
+        assertTrue(propertiesFile.isFile());
+
+
+        Properties ps = new Properties();
+
+        ps.load(new FileInputStream(propertiesFile));
+
+        assertEquals("26", ps.getProperty("latency99th"));
+        assertEquals("61", ps.getProperty("latency9999th"));
+        assertEquals("13", ps.getProperty("latency50th"));
+        assertEquals("9916", ps.getProperty("latencyTotalCount"));
+        assertEquals("61.0", ps.getProperty("latencyMaxValue"));
     }
 }

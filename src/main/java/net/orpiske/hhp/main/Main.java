@@ -15,10 +15,7 @@
  */
 package net.orpiske.hhp.main;
 
-import net.orpiske.hhp.plot.HdrData;
-import net.orpiske.hhp.plot.HdrLogProcessorWrapper;
-import net.orpiske.hhp.plot.HdrPlotter;
-import net.orpiske.hhp.plot.HdrReader;
+import net.orpiske.hhp.plot.*;
 import net.orpiske.hhp.utils.Constants;
 import org.apache.commons.cli.*;
 import org.apache.commons.io.FilenameUtils;
@@ -96,6 +93,8 @@ public class Main {
             // HdrPlotter
             HdrPlotter plotter = new HdrPlotter(FilenameUtils.removeExtension(fileName), timeUnit);
             plotter.plot(hdrData.getPercentile(), hdrData.getValue());
+
+            HdrPropertyWriter.writeFrom(fileName);
 
             System.exit(0);
         } catch (Exception e) {
