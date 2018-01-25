@@ -64,7 +64,7 @@ public class HdrPlotter {
                 .width(outputWidth)
                 .height(outputHeight)
                 .title(chartProperties.getTitle())
-                .xAxisTitle(null)
+                .xAxisTitle(chartProperties.getxTitle())
                 .yAxisTitle(chartProperties.getyTitle())
                 .build();
 
