@@ -22,4 +22,4 @@ if %OS%=="WINNT" @setlocal
 
 for %%i in ("%HHP_HOME%"\bin\hdr-histogram-*) do set HHP_JAR="%%i"
 
-@java -classpath %HHP_JAR% -Dorg.ssps.sdm.home=%HHP_HOME% net.orpiske.hhp.main.Main %*
+@java -classpath %HHP_JAR% net.orpiske.hhp.main.Main %*
