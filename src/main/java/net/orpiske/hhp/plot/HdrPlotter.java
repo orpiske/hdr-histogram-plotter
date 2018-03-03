@@ -163,8 +163,8 @@ public class HdrPlotter {
      * Plots the HDR histogram
      * @param xData the data for the x axis
      * @param yData the data for tye y axis
-     * @throws IOException
-     * @throws HdrEmptyDataSet
+     * @throws IOException if unable to save the bitmap file
+     * @throws HdrEmptyDataSet if the data set is empty
      */
     public void plot(List<Double> xData, List<Double> yData) throws IOException, HdrEmptyDataSet {
         if (xData == null || xData.size() == 0) {
@@ -202,7 +202,7 @@ public class HdrPlotter {
 
     /**
      * Sets the the grid lines should be visible
-     * @param plotGridLinesVisible
+     * @param plotGridLinesVisible true to make the grid lines visible or false otherwise
      */
     public void setPlotGridLinesVisible(boolean plotGridLinesVisible) {
         this.plotGridLinesVisible = plotGridLinesVisible;
