@@ -29,7 +29,7 @@ import java.io.PrintStream;
  */
 public class HdrLogProcessorWrapper {
     public static final String DEFAULT_UNIT_RATE = "1";
-    private String unitRatio;
+    private final String unitRatio;
 
     public HdrLogProcessorWrapper(String unitRatio) {
         this.unitRatio = unitRatio;

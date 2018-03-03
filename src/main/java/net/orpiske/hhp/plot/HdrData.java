@@ -23,8 +23,8 @@ import java.util.List;
  * A container for the HDR Histogram data being processed
  */
 public class HdrData {
-    private List<Double> value = new LinkedList<>();
-    private List<Double> percentile = new LinkedList<>();
+    private final List<Double> value = new LinkedList<>();
+    private final List<Double> percentile = new LinkedList<>();
 
     public List<Double> getValue() {
         return value;
