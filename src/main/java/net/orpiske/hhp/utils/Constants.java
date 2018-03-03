@@ -20,12 +20,12 @@ package net.orpiske.hhp.utils;
  * @author Otavio R. Piske
  *
  */
+@SuppressWarnings("ALL")
 public final class Constants {
 
 	public static final String VERSION = "1.0.0";
 
 	public static final String BIN_NAME = "hdr-histogram-plotter " + VERSION;
-
 
 	/**
 	 * Restricted constructor
