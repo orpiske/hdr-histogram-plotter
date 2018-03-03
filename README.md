@@ -6,6 +6,8 @@ Build Status
 
 Build Status: [![Build Status](https://travis-ci.org/orpiske/hdr-histogram-plotter.svg?branch=master)](https://travis-ci.org/orpiske/hdr-histogram-plotter)
 
+Codacy Report: [![Codacy Badge](https://api.codacy.com/project/badge/Grade/e9882493a3d0470d846abb221f5b7a99)](https://www.codacy.com/app/orpiske/hdr-histogram-plotter?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=orpiske/hdr-histogram-plotter&amp;utm_campaign=Badge_Grade)
+
 Introduction
 ----
 
