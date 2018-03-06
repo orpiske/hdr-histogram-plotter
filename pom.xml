@@ -4,13 +4,13 @@
 
     <groupId>net.orpiske</groupId>
     <artifactId>hdr-histogram-plotter</artifactId>
-    <version>1.1.0-SNAPSHOT</version>
+    <version>1.1.0</version>
 
 
     <scm>
         <developerConnection>scm:git:git@github.com:orpiske/hdr-histogram-plotter.git</developerConnection>
         <url>https://github.com/orpiske/hdr-histogram-plotter</url>
-        <tag>HEAD</tag>
+        <tag>hdr-histogram-plotter-1.1.0</tag>
     </scm>
 
     <licenses>
