@@ -20,18 +20,18 @@ public class HdrPropertyWriter {
 
     private HdrPropertyWriter() {}
 
+
     /**
      * Save a summary of the analyzed rate data to a properties file named "rate.properties"
      * @param histogramFile the directory where the saved file will be located
      * @throws IOException if unable to save
      */
-    public static void writeFrom(final String histogramFile) throws IOException {
-        File in = new File(histogramFile);
-        logger.trace("Writing properties to {}/latency.properties", in.getPath());
+    public static void writeFrom(final File histogramFile) throws IOException {
+        logger.trace("Writing properties to {}/latency.properties", histogramFile.getPath());
 
         Properties prop = new Properties();
 
-        HistogramLogReader histogramLogReader = new HistogramLogReader(in);
+        HistogramLogReader histogramLogReader = new HistogramLogReader(histogramFile);
 
         EncodableHistogram eh = histogramLogReader.nextIntervalHistogram();
 
@@ -71,9 +71,18 @@ public class HdrPropertyWriter {
         }
 
 
-        try (FileOutputStream fos = new FileOutputStream(new File(in.getParentFile(), "latency.properties"))) {
+        try (FileOutputStream fos = new FileOutputStream(new File(histogramFile.getParentFile(), "latency.properties"))) {
             prop.store(fos, "hdr-histogram-plotter");
         }
+    }
+
+    /**
+     * Save a summary of the analyzed rate data to a properties file named "rate.properties"
+     * @param histogramFile the directory where the saved file will be located
+     * @throws IOException if unable to save
+     */
+    public static void writeFrom(final String histogramFile) throws IOException {
+        writeFrom(new File(histogramFile));
     }
 
 
