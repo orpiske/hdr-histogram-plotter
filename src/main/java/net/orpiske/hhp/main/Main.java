@@ -94,7 +94,9 @@ public class Main {
             HdrPlotter plotter = new HdrPlotter(FilenameUtils.removeExtension(fileName), timeUnit);
             plotter.plot(hdrData.getPercentile(), hdrData.getValue());
 
-            HdrPropertyWriter.writeFrom(fileName);
+            HdrPropertyWriter hdrPropertyWriter = new HdrPropertyWriter();
+
+            hdrPropertyWriter.postProcess(fileName);
 
             System.exit(0);
         } catch (Exception e) {

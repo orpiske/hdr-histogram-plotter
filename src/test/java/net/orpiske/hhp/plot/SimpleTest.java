@@ -42,7 +42,9 @@ public class SimpleTest {
         HdrPlotter plotter = new HdrPlotter(FilenameUtils.removeExtension(fileName));
         plotter.plot(hdrData.getPercentile(), hdrData.getValue());
 
-        HdrPropertyWriter.writeFrom(fileName);
+        HdrPropertyWriter hdrPropertyWriter = new HdrPropertyWriter();
+
+        hdrPropertyWriter.postProcess(fileName);
     }
 
 
