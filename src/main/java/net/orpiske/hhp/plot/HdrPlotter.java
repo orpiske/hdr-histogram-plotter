@@ -22,6 +22,7 @@ import org.knowm.xchart.BitmapEncoder;
 import org.knowm.xchart.XYChart;
 import org.knowm.xchart.XYChartBuilder;
 import org.knowm.xchart.XYSeries;
+import org.knowm.xchart.style.Styler;
 import org.knowm.xchart.style.colors.ChartColor;
 import org.knowm.xchart.style.colors.XChartSeriesColors;
 import org.knowm.xchart.style.lines.SeriesLines;
@@ -66,6 +67,7 @@ public class HdrPlotter {
                 .title(chartProperties.getTitle())
                 .xAxisTitle(chartProperties.getxTitle())
                 .yAxisTitle(chartProperties.getyTitle())
+                .theme(Styler.ChartTheme.Matlab)
                 .build();
 
         chart.getStyler().setPlotBackgroundColor(ChartColor.getAWTColor(ChartColor.WHITE));
@@ -88,6 +90,9 @@ public class HdrPlotter {
         chart.getStyler().setLegendFont(new Font("Verdana", Font.PLAIN, 12));
         chart.getStyler().setAxisTitleFont(new Font("Verdana", Font.PLAIN, 12));
         chart.getStyler().setAxisTickLabelsFont(new Font("Verdana", Font.PLAIN, 10));
+
+        chart.getStyler().setLegendPosition(Styler.LegendPosition.OutsideS);
+        chart.getStyler().setLegendLayout(Styler.LegendLayout.Vertical);
 
         return chart;
 
