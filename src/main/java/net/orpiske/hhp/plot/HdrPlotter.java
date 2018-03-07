@@ -37,68 +37,23 @@ import java.util.List;
  * The plotter for HDR histograms
  */
 @SuppressWarnings("unused")
-public class HdrPlotter {
+public class HdrPlotter extends AbstractHdrPlotter {
     private final String baseName;
-
-    private int outputWidth = 1200;
-    private int outputHeight = 700;
-    private boolean plotGridLinesVisible = true;
-
-    private ChartProperties chartProperties = new ChartProperties();
 
     public HdrPlotter(final String baseName) {
         this.baseName = baseName;
 
-        chartProperties.setyTitle("microseconds");
+        getChartProperties().setyTitle("microseconds");
     }
 
     public HdrPlotter(final String baseName, final String timeUnit) {
         this.baseName = baseName;
 
-        chartProperties.setyTitle(timeUnit);
+        getChartProperties().setyTitle(timeUnit);
     }
 
-    private XYChart buildCommonChart() {
 
-        // Create Chart
-        XYChart chart = new XYChartBuilder()
-                .width(outputWidth)
-                .height(outputHeight)
-                .title(chartProperties.getTitle())
-                .xAxisTitle(chartProperties.getxTitle())
-                .yAxisTitle(chartProperties.getyTitle())
-                .theme(Styler.ChartTheme.Matlab)
-                .build();
-
-        chart.getStyler().setPlotBackgroundColor(ChartColor.getAWTColor(ChartColor.WHITE));
-        chart.getStyler().setChartBackgroundColor(Color.WHITE);
-        chart.getStyler().setChartTitleBoxBackgroundColor(new Color(0, 222, 0));
-
-        chart.getStyler().setPlotGridLinesVisible(plotGridLinesVisible);
-
-        chart.getStyler().setYAxisTickMarkSpacingHint(15);
-        chart.getStyler().setXAxisTickMarkSpacingHint(10);
-
-        chart.getStyler().setXAxisMax(100.0);
-        chart.getStyler().setXAxisLabelRotation(45);
-
-        chart.getStyler().setAxisTickMarkLength(15);
-        chart.getStyler().setPlotMargin(0);
-        chart.getStyler().setPlotContentSize(.99);
-
-        chart.getStyler().setChartTitleFont(new Font("Verdana", Font.BOLD, 14));
-        chart.getStyler().setLegendFont(new Font("Verdana", Font.PLAIN, 12));
-        chart.getStyler().setAxisTitleFont(new Font("Verdana", Font.PLAIN, 12));
-        chart.getStyler().setAxisTickLabelsFont(new Font("Verdana", Font.PLAIN, 10));
-
-        chart.getStyler().setLegendPosition(Styler.LegendPosition.OutsideS);
-        chart.getStyler().setLegendLayout(Styler.LegendLayout.Vertical);
-
-        return chart;
-
-    }
-
-    private void plot99(List<Double> xData, List<Double> yData) throws IOException {
+    protected void plot99(List<Double> xData, List<Double> yData) throws IOException {
         XYChart chart = buildCommonChart();
 
         /*
@@ -109,7 +64,7 @@ public class HdrPlotter {
         chart.getStyler().setXAxisMin(99.0);
 
         // Series
-        XYSeries series = chart.addSeries(chartProperties.getSeriesName(), xData, yData);
+        XYSeries series = chart.addSeries(getChartProperties().getSeriesName(), xData, yData);
 
         series.setLineColor(XChartSeriesColors.BLUE);
         series.setMarkerColor(Color.LIGHT_GRAY);
@@ -119,7 +74,7 @@ public class HdrPlotter {
         BitmapEncoder.saveBitmap(chart, baseName + "_99.png", BitmapEncoder.BitmapFormat.PNG);
     }
 
-    private void plot90(List<Double> xData, List<Double> yData) throws IOException {
+    protected void plot90(List<Double> xData, List<Double> yData) throws IOException {
         XYChart chart = buildCommonChart();
 
         /*
@@ -130,7 +85,7 @@ public class HdrPlotter {
         chart.getStyler().setXAxisMin(90.0);
 
         // Series
-        XYSeries series = chart.addSeries(chartProperties.getSeriesName(), xData, yData);
+        XYSeries series = chart.addSeries(getChartProperties().getSeriesName(), xData, yData);
 
         series.setLineColor(XChartSeriesColors.BLUE);
         series.setMarkerColor(Color.LIGHT_GRAY);
@@ -140,11 +95,9 @@ public class HdrPlotter {
         BitmapEncoder.saveBitmap(chart, baseName + "_90.png", BitmapEncoder.BitmapFormat.PNG);
     }
 
-    private void plotAll(List<Double> xData, List<Double> yData) throws IOException {
-
+    protected void plotAll(List<Double> xData, List<Double> yData) throws IOException {
         // Create Chart
         XYChart chart = buildCommonChart();
-
 
          /*
          * This shows almost everything so set te minimum
@@ -153,7 +106,7 @@ public class HdrPlotter {
         chart.getStyler().setXAxisMin(5.0);
 
         // Series
-        XYSeries series = chart.addSeries(chartProperties.getSeriesName(), xData, yData);
+        XYSeries series = chart.addSeries(getChartProperties().getSeriesName(), xData, yData);
 
         series.setLineColor(XChartSeriesColors.BLUE);
         series.setMarkerColor(Color.LIGHT_GRAY);
@@ -183,42 +136,7 @@ public class HdrPlotter {
         plotAll(xData, yData);
         plot90(xData, yData);
         plot99(xData, yData);
-
     }
 
 
-    /**
-     * Sets the output width for the graph
-     * @param outputWidth the width in pixels
-     */
-    public void setOutputWidth(int outputWidth) {
-        this.outputWidth = outputWidth;
-    }
-
-
-    /**
-     * Sets the output height for the graph
-     * @param outputHeight the height in pixels
-     */
-    public void setOutputHeight(int outputHeight) {
-        this.outputHeight = outputHeight;
-    }
-
-
-    /**
-     * Sets the the grid lines should be visible
-     * @param plotGridLinesVisible true to make the grid lines visible or false otherwise
-     */
-    public void setPlotGridLinesVisible(boolean plotGridLinesVisible) {
-        this.plotGridLinesVisible = plotGridLinesVisible;
-    }
-
-
-    public ChartProperties getChartProperties() {
-        return chartProperties;
-    }
-
-    public void setChartProperties(ChartProperties chartProperties) {
-        this.chartProperties = chartProperties;
-    }
 }
