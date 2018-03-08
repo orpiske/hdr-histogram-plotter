@@ -103,9 +103,6 @@ public abstract class AbstractHdrPlotter {
 
         chart.getStyler().setPlotGridLinesVisible(plotGridLinesVisible);
 
-        chart.getStyler().setYAxisTickMarkSpacingHint(15);
-        chart.getStyler().setXAxisTickMarkSpacingHint(10);
-
         chart.getStyler().setXAxisMax(100.0);
         chart.getStyler().setXAxisLabelRotation(45);
 
