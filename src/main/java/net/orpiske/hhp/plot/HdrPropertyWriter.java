@@ -1,15 +1,14 @@
 package net.orpiske.hhp.plot;
 
-import org.HdrHistogram.AbstractHistogram;
-import org.HdrHistogram.DoubleHistogram;
-import org.HdrHistogram.EncodableHistogram;
-import org.HdrHistogram.HistogramLogReader;
+import org.HdrHistogram.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.time.Instant;
+import java.util.Objects;
 import java.util.Properties;
 
 /**
@@ -19,14 +18,7 @@ public class HdrPropertyWriter implements HdrPostProcessor {
     static class DefaultHistogramHandler implements HistogramHandler {
         private static final Logger logger = LoggerFactory.getLogger(DefaultHistogramHandler.class);
 
-        @Override
-        public void handle(final File histogramFile) throws Exception {
-            logger.trace("Writing properties to {}/latency.properties", histogramFile.getPath());
-
-            HistogramLogReader histogramLogReader = new HistogramLogReader(histogramFile);
-
-            EncodableHistogram eh = histogramLogReader.nextIntervalHistogram();
-
+        private static void doSave(File histogramFile, EncodableHistogram eh) throws IOException {
             Properties prop = new Properties();
 
             prop.setProperty("latencyStartTS", Long.toString(eh.getStartTimeStamp()));
@@ -47,6 +39,8 @@ public class HdrPropertyWriter implements HdrPostProcessor {
                 prop.setProperty("latencyStdDeviation", Double.toString(ah.getStdDeviation()));
                 prop.setProperty("latencyTotalCount", Long.toString(ah.getTotalCount()));
                 prop.setProperty("latencyMean", Double.toString(ah.getMean()));
+
+
             }
             else {
                 if (eh instanceof DoubleHistogram) {
@@ -68,7 +62,56 @@ public class HdrPropertyWriter implements HdrPostProcessor {
                 prop.store(fos, "hdr-histogram-plotter");
             }
         }
+
+        @Override
+        public void handle(final File histogramFile) throws Exception {
+            logger.trace("Writing properties to {}/latency.properties", histogramFile.getPath());
+
+            HistogramLogReader histogramLogReader = new HistogramLogReader(histogramFile);
+
+            Histogram accumulatedHistogram = null;
+            DoubleHistogram accumulatedDoubleHistogram = null;
+
+            int i = 0;
+            while (histogramLogReader.hasNext()) {
+                EncodableHistogram eh = histogramLogReader.nextIntervalHistogram();
+
+                if (i == 0) {
+                    if (eh instanceof DoubleHistogram) {
+                        accumulatedDoubleHistogram = ((DoubleHistogram) eh).copy();
+                        accumulatedDoubleHistogram.reset();
+                        accumulatedDoubleHistogram.setAutoResize(true);
+                    }
+                    else {
+                        accumulatedHistogram = ((Histogram) eh).copy();
+                        accumulatedHistogram.reset();
+                        accumulatedHistogram.setAutoResize(true);
+                    }
+                }
+
+                logger.debug("Processing histogram from point in time {} to {}",
+                        Instant.ofEpochMilli(eh.getStartTimeStamp()), Instant.ofEpochMilli(eh.getEndTimeStamp()));
+
+                if (eh instanceof DoubleHistogram) {
+                    Objects.requireNonNull(accumulatedDoubleHistogram).add((DoubleHistogram) eh);
+                }
+                else {
+                    Objects.requireNonNull(accumulatedHistogram).add((Histogram) eh);
+                }
+
+                i++;
+            }
+
+            if (accumulatedHistogram != null) {
+                doSave(histogramFile, accumulatedHistogram);
+            }
+            else {
+                doSave(histogramFile, Objects.requireNonNull(accumulatedDoubleHistogram));
+            }
+        }
     }
+
+
 
     /**
      * Save a summary of the analyzed rate data to a properties file named "latency.properties"
