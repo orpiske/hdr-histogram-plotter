@@ -36,6 +36,7 @@ public class HdrPropertyWriter implements HdrPostProcessor {
                 prop.setProperty("latency99th", Long.toString(ah.getValueAtPercentile(99.0)));
                 prop.setProperty("latency999th", Long.toString(ah.getValueAtPercentile(99.9)));
                 prop.setProperty("latency9999th", Long.toString(ah.getValueAtPercentile(99.99)));
+                prop.setProperty("latency99999th", Long.toString(ah.getValueAtPercentile(99.999)));
                 prop.setProperty("latencyStdDeviation", Double.toString(ah.getStdDeviation()));
                 prop.setProperty("latencyTotalCount", Long.toString(ah.getTotalCount()));
                 prop.setProperty("latencyMean", Double.toString(ah.getMean()));
@@ -52,6 +53,7 @@ public class HdrPropertyWriter implements HdrPostProcessor {
                     prop.setProperty("latency99th", Double.toString(dh.getValueAtPercentile(99.0)));
                     prop.setProperty("latency999th", Double.toString(dh.getValueAtPercentile(99.9)));
                     prop.setProperty("latency9999th", Double.toString(dh.getValueAtPercentile(99.99)));
+                    prop.setProperty("latency99999th", Double.toString(dh.getValueAtPercentile(99.999)));
                     prop.setProperty("latencyStdDeviation", Double.toString(dh.getStdDeviation()));
                     prop.setProperty("latencyTotalCount", Long.toString(dh.getTotalCount()));
                     prop.setProperty("latencyMean", Double.toString(dh.getMean()));
