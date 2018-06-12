@@ -121,5 +121,5 @@ public abstract class AbstractHdrPlotter {
         return chart;
     }
 
-    abstract public void plot(java.util.List<Double> xData, List<Double> yData) throws IOException, HdrEmptyDataSet;
+    abstract public void plot(final HdrData data) throws IOException, HdrEmptyDataSet;
 }

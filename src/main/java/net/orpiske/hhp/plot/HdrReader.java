@@ -30,12 +30,9 @@ import java.util.List;
 public class HdrReader {
     private static final Logger logger = LoggerFactory.getLogger(HdrReader.class);
 
-    public HdrData read(String filename) throws IOException {
-        Reader in = new FileReader(filename);
-
-        HdrData ret = new HdrData();
-        List<Double> value = ret.getValue();
-        List<Double> percentile = ret.getPercentile();
+    private void genericRead(HdrData hdrData, Reader in) throws IOException {
+        List<Double> value = hdrData.getValue();
+        List<Double> percentile = hdrData.getPercentile();
 
         Iterable<CSVRecord> records = CSVFormat.RFC4180
                 .withCommentMarker('#')
@@ -52,6 +49,31 @@ public class HdrReader {
 
             value.add(Double.parseDouble(valueStr));
             percentile.add(Double.parseDouble(percentileStr) * 100);
+        }
+
+//        return hdrData;
+    }
+
+    public HdrData read(final String filename) throws IOException {
+        HdrData ret = new HdrData();
+
+        try (Reader in = new FileReader(filename)) {
+            genericRead(ret, in);
+        }
+
+        return ret;
+    }
+
+
+    public HdrDataCO read(final String uncorrected, final String corrected) throws IOException {
+        HdrDataCO ret = new HdrDataCO();
+
+        try (Reader uncorrectedReader = new FileReader(uncorrected)) {
+            genericRead(ret, uncorrectedReader);
+        }
+
+        try (Reader correctedReader = new FileReader(corrected)) {
+            genericRead(ret.getCorrected(), correctedReader);
         }
 
         return ret;

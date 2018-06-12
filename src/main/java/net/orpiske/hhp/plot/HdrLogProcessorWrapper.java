@@ -16,7 +16,7 @@
 
 package net.orpiske.hhp.plot;
 
-import org.HdrHistogram.HistogramLogProcessor;
+import net.orpiske.hhp.plot.exceptions.HdrEmptyDataSet;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.FileOutputStream;
@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 
 /**
- * The HistogramLogProcessor does not _seem_ to provide an way to set its parameters. Therefore
+ * The CustomHistogramLogProcessor does not _seem_ to provide an way to set its parameters. Therefore
  * just wrap it over its main method.
  */
 public class HdrLogProcessorWrapper {
@@ -35,7 +35,7 @@ public class HdrLogProcessorWrapper {
         this.unitRatio = unitRatio;
     }
 
-    public String convertLog(String path) throws IOException {
+    public String convertLog(final String path) throws IOException {
         String args[] = {
                 "-i", path,
                 "-outputValueUnitRatio", unitRatio,
@@ -56,7 +56,7 @@ public class HdrLogProcessorWrapper {
 
             System.setOut(newOutStream);
 
-            HistogramLogProcessor processor = new HistogramLogProcessor(args);
+            CustomHistogramLogProcessor processor = new CustomHistogramLogProcessor(args);
             processor.run();
 
             /*
@@ -69,5 +69,49 @@ public class HdrLogProcessorWrapper {
 
 
         return csvFile;
+    }
+
+    public String[] convertLog(final String path, final String knownCO) throws IOException {
+        String uncorrectedCsv = convertLog(path);
+
+        if (uncorrectedCsv == null) {
+            throw new IOException("Converted uncorrected file was not found");
+        }
+
+
+        String args[] = {
+                "-i", path,
+                "-outputValueUnitRatio", unitRatio,
+                "-correctLogWithKnownCoordinatedOmission", knownCO,
+                "-csv"
+        };
+
+        String correctedCsv = FilenameUtils.removeExtension(path) + "-corrected.csv";
+        PrintStream oldOut = System.out;
+
+        try (FileOutputStream fileStream = new FileOutputStream(correctedCsv)) {
+            PrintStream newOutStream = new PrintStream(fileStream);
+
+            /*
+             * By default it prints on stdout. Since it does not seem to provide an easy
+             * way to save to a file via API, then just replace the stdout for saving the
+             * CSV data.
+             */
+
+            System.setOut(newOutStream);
+
+            CustomHistogramLogProcessor processor = new CustomHistogramLogProcessor(args);
+            processor.run();
+
+            /*
+             * Restore it after use
+             */
+
+        } finally {
+            System.setOut(oldOut);
+        }
+
+
+        return new String[] {uncorrectedCsv, correctedCsv};
     }
 }

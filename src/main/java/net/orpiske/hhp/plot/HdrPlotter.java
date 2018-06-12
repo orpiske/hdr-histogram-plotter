@@ -116,6 +116,37 @@ public class HdrPlotter extends AbstractHdrPlotter {
         BitmapEncoder.saveBitmap(chart, baseName + "_all.png", BitmapEncoder.BitmapFormat.PNG);
     }
 
+    protected void plotAll(HdrDataCO data) throws IOException {
+        // Create Chart
+        XYChart chart = buildCommonChart();
+
+        /*
+         * This shows almost everything so set te minimum
+         * accordingly.
+         */
+        chart.getStyler().setXAxisMin(5.0);
+
+        // Series
+        XYSeries serviceTime = chart.addSeries("Service time " + getChartProperties().getSeriesName(),
+                data.getPercentile(), data.getValue());
+
+        serviceTime.setLineColor(XChartSeriesColors.BLUE);
+        serviceTime.setMarkerColor(Color.LIGHT_GRAY);
+        serviceTime.setMarker(SeriesMarkers.NONE);
+        serviceTime.setLineStyle(SeriesLines.SOLID);
+
+        // Series
+        XYSeries responseTime = chart.addSeries("Response time " + getChartProperties().getSeriesName(),
+                data.getCorrected().getPercentile(), data.getCorrected().getValue());
+
+        responseTime.setLineColor(XChartSeriesColors.BLUE);
+        responseTime.setMarkerColor(Color.LIGHT_GRAY);
+        responseTime.setMarker(SeriesMarkers.NONE);
+        serviceTime.setLineStyle(SeriesLines.SOLID);
+
+        BitmapEncoder.saveBitmap(chart, baseName + "_all.png", BitmapEncoder.BitmapFormat.PNG);
+    }
+
 
     /**
      * Plots the HDR histogram
@@ -124,7 +155,7 @@ public class HdrPlotter extends AbstractHdrPlotter {
      * @throws IOException if unable to save the bitmap file
      * @throws HdrEmptyDataSet if the data set is empty
      */
-    public void plot(List<Double> xData, List<Double> yData) throws IOException, HdrEmptyDataSet {
+    private void plot(List<Double> xData, List<Double> yData) throws IOException, HdrEmptyDataSet {
         if (xData == null || xData.size() == 0) {
             throw new HdrEmptyDataSet("The 'X' column data set is empty");
         }
@@ -138,5 +169,13 @@ public class HdrPlotter extends AbstractHdrPlotter {
         plot99(xData, yData);
     }
 
-
+    @Override
+    public void plot(final HdrData hdrData) throws IOException, HdrEmptyDataSet {
+        if (hdrData instanceof HdrDataCO) {
+            plotAll((HdrDataCO) hdrData);
+        }
+        else {
+            plot(hdrData.getPercentile(), hdrData.getValue());
+        }
+    }
 }

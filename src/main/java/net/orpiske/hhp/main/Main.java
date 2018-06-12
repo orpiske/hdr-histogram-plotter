@@ -25,6 +25,7 @@ public class Main {
     private static String fileName;
     private static String timeUnit;
     private static String unitRate;
+    private static String knownCO;
 
     /**
      * Prints the help for the action and exit
@@ -47,6 +48,7 @@ public class Main {
         options.addOption("f", "file", true, "file to plot");
         options.addOption("t", "time-unit", true, "time unit to use (milliseconds, microseconds, etc)");
         options.addOption("r", "unit-rate", true, "the unit rate to use (default = 1)");
+        options.addOption("", "time-unit", true, "time unit to use (milliseconds, microseconds, etc)");
 
         try {
             cmdLine = parser.parse(options, args);
@@ -92,7 +94,7 @@ public class Main {
 
             // HdrPlotter
             HdrPlotter plotter = new HdrPlotter(FilenameUtils.removeExtension(fileName), timeUnit);
-            plotter.plot(hdrData.getPercentile(), hdrData.getValue());
+            plotter.plot(hdrData);
 
             HdrPropertyWriter hdrPropertyWriter = new HdrPropertyWriter();
 

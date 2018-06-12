@@ -17,26 +17,31 @@
 package net.orpiske.hhp.plot;
 
 import org.apache.commons.io.FilenameUtils;
-import static org.junit.Assert.*;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Properties;
 
-public class SimpleTest {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+public class TestWithCorrection {
 
     private void plot(String fileName) throws Exception {
         // HDR Converter
         HdrLogProcessorWrapper processorWrapper = new HdrLogProcessorWrapper(HdrLogProcessorWrapper.DEFAULT_UNIT_RATE);
 
 
-        String csvFile = processorWrapper.convertLog(fileName);
+        String[] csvFiles = processorWrapper.convertLog(fileName, "1000");
+        if (csvFiles == null || csvFiles.length != 2) {
+            throw new Exception("Unexpected CSV files array size");
+        }
 
         // CSV Reader
         HdrReader reader = new HdrReader();
 
-        HdrData hdrData = reader.read(csvFile);
+        HdrData hdrData = reader.read(csvFiles[0], csvFiles[1]);
 
         // HdrPlotter
         HdrPlotter plotter = new HdrPlotter(FilenameUtils.removeExtension(fileName));
