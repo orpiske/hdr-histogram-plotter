@@ -33,7 +33,7 @@ public class TestWithCorrection {
         HdrLogProcessorWrapper processorWrapper = new HdrLogProcessorWrapper(HdrLogProcessorWrapper.DEFAULT_UNIT_RATE);
 
 
-        String[] csvFiles = processorWrapper.convertLog(fileName, "1000");
+        String[] csvFiles = processorWrapper.convertLog(fileName, "10");
         if (csvFiles == null || csvFiles.length != 2) {
             throw new Exception("Unexpected CSV files array size");
         }
@@ -75,7 +75,7 @@ public class TestWithCorrection {
         File pngFile90 = new File(pngFilename90);
         assertTrue(pngFile90.exists());
         assertTrue(pngFile90.isFile());
-
+//
         String pngFilenameAll = FilenameUtils.removeExtension(fileName) + "_all.png";
 
         File pngFileAll = new File(pngFilenameAll);

@@ -53,7 +53,8 @@ public class HdrPlotter extends AbstractHdrPlotter {
     }
 
 
-    protected void plot99(List<Double> xData, List<Double> yData) throws IOException {
+    private void plotSingleAt(final List<Double> xData, final List<Double> yData, final Double min, final String fileName)
+            throws IOException {
         XYChart chart = buildCommonChart();
 
         /*
@@ -61,7 +62,7 @@ public class HdrPlotter extends AbstractHdrPlotter {
          * accordingly.
          */
 
-        chart.getStyler().setXAxisMin(99.0);
+        chart.getStyler().setXAxisMin(min);
 
         // Series
         XYSeries series = chart.addSeries(getChartProperties().getSeriesName(), xData, yData);
@@ -71,52 +72,22 @@ public class HdrPlotter extends AbstractHdrPlotter {
         series.setMarker(SeriesMarkers.NONE);
         series.setLineStyle(SeriesLines.SOLID);
 
-        BitmapEncoder.saveBitmap(chart, baseName + "_99.png", BitmapEncoder.BitmapFormat.PNG);
+        BitmapEncoder.saveBitmap(chart, fileName, BitmapEncoder.BitmapFormat.PNG);
     }
 
-    protected void plot90(List<Double> xData, List<Double> yData) throws IOException {
-        XYChart chart = buildCommonChart();
-
-        /*
-         * This shows only the > 90 percentile, so set te minimum
-         * accordingly.
-         */
-
-        chart.getStyler().setXAxisMin(90.0);
-
-        // Series
-        XYSeries series = chart.addSeries(getChartProperties().getSeriesName(), xData, yData);
-
-        series.setLineColor(XChartSeriesColors.BLUE);
-        series.setMarkerColor(Color.LIGHT_GRAY);
-        series.setMarker(SeriesMarkers.NONE);
-        series.setLineStyle(SeriesLines.SOLID);
-
-        BitmapEncoder.saveBitmap(chart, baseName + "_90.png", BitmapEncoder.BitmapFormat.PNG);
+    protected void plot99(final List<Double> xData, final List<Double> yData) throws IOException {
+        plotSingleAt(xData, yData, 99.0, baseName + "_99.png");
     }
 
-    protected void plotAll(List<Double> xData, List<Double> yData) throws IOException {
-        // Create Chart
-        XYChart chart = buildCommonChart();
-
-         /*
-         * This shows almost everything so set te minimum
-         * accordingly.
-         */
-        chart.getStyler().setXAxisMin(5.0);
-
-        // Series
-        XYSeries series = chart.addSeries(getChartProperties().getSeriesName(), xData, yData);
-
-        series.setLineColor(XChartSeriesColors.BLUE);
-        series.setMarkerColor(Color.LIGHT_GRAY);
-        series.setMarker(SeriesMarkers.NONE);
-        series.setLineStyle(SeriesLines.SOLID);
-
-        BitmapEncoder.saveBitmap(chart, baseName + "_all.png", BitmapEncoder.BitmapFormat.PNG);
+    protected void plot90(final List<Double> xData, final List<Double> yData) throws IOException {
+        plotSingleAt(xData, yData, 90.0, baseName + "_90.png");
     }
 
-    protected void plotAll(HdrDataCO data) throws IOException {
+    protected void plotAll(final List<Double> xData, final List<Double> yData) throws IOException {
+        plotSingleAt(xData, yData, 5.0, baseName + "_all.png");
+    }
+
+    protected void plotAllCo(HdrDataCO data, final Double min, final String fileName) throws IOException {
         // Create Chart
         XYChart chart = buildCommonChart();
 
@@ -124,13 +95,13 @@ public class HdrPlotter extends AbstractHdrPlotter {
          * This shows almost everything so set te minimum
          * accordingly.
          */
-        chart.getStyler().setXAxisMin(5.0);
+        chart.getStyler().setXAxisMin(min);
 
         // Series
         XYSeries serviceTime = chart.addSeries("Service time " + getChartProperties().getSeriesName(),
                 data.getPercentile(), data.getValue());
 
-        serviceTime.setLineColor(XChartSeriesColors.BLUE);
+        serviceTime.setLineColor(XChartSeriesColors.RED);
         serviceTime.setMarkerColor(Color.LIGHT_GRAY);
         serviceTime.setMarker(SeriesMarkers.NONE);
         serviceTime.setLineStyle(SeriesLines.SOLID);
@@ -142,9 +113,21 @@ public class HdrPlotter extends AbstractHdrPlotter {
         responseTime.setLineColor(XChartSeriesColors.BLUE);
         responseTime.setMarkerColor(Color.LIGHT_GRAY);
         responseTime.setMarker(SeriesMarkers.NONE);
-        serviceTime.setLineStyle(SeriesLines.SOLID);
+        responseTime.setLineStyle(SeriesLines.SOLID);
 
-        BitmapEncoder.saveBitmap(chart, baseName + "_all.png", BitmapEncoder.BitmapFormat.PNG);
+        BitmapEncoder.saveBitmap(chart, fileName, BitmapEncoder.BitmapFormat.PNG);
+    }
+
+    protected void plotAll(HdrDataCO data) throws IOException {
+        plotAllCo(data, 5.0, baseName + "_all.png");
+    }
+
+    protected void plot90(HdrDataCO data) throws IOException {
+        plotAllCo(data, 90.0, baseName + "_90.png");
+    }
+
+    protected void plot99(HdrDataCO data) throws IOException {
+        plotAllCo(data, 99.0, baseName + "_99.png");
     }
 
 
@@ -173,6 +156,8 @@ public class HdrPlotter extends AbstractHdrPlotter {
     public void plot(final HdrData hdrData) throws IOException, HdrEmptyDataSet {
         if (hdrData instanceof HdrDataCO) {
             plotAll((HdrDataCO) hdrData);
+            plot90((HdrDataCO) hdrData);
+            plot99((HdrDataCO) hdrData);
         }
         else {
             plot(hdrData.getPercentile(), hdrData.getValue());
