@@ -55,7 +55,7 @@ public class TestWithCorrection {
 
     @Test
     public void testPlot() throws Exception {
-        String fileName = this.getClass().getResource("file-01.hdr").getPath();
+        String fileName = this.getClass().getResource("file-02.hdr").getPath();
         plot(fileName);
 
         String csvFilename = FilenameUtils.removeExtension(fileName) + ".csv";
