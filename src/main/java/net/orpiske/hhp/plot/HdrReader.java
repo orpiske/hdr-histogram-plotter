@@ -50,8 +50,6 @@ public class HdrReader {
             value.add(Double.parseDouble(valueStr));
             percentile.add(Double.parseDouble(percentileStr) * 100);
         }
-
-//        return hdrData;
     }
 
     public HdrData read(final String filename) throws IOException {
