@@ -98,7 +98,7 @@ public class HdrPlotter extends AbstractHdrPlotter {
         chart.getStyler().setXAxisMin(min);
 
         // Series
-        XYSeries serviceTime = chart.addSeries("Uncorrected " + getChartProperties().getSeriesName(),
+        XYSeries serviceTime = chart.addSeries("Uncorrected " + getChartProperties().getSeriesName().toLowerCase(),
                 data.getPercentile(), data.getValue());
 
         serviceTime.setLineColor(XChartSeriesColors.RED);
@@ -107,7 +107,7 @@ public class HdrPlotter extends AbstractHdrPlotter {
         serviceTime.setLineStyle(SeriesLines.SOLID);
 
         // Series
-        XYSeries responseTime = chart.addSeries("Corrected " + getChartProperties().getSeriesName(),
+        XYSeries responseTime = chart.addSeries("Corrected " + getChartProperties().getSeriesName().toLowerCase(),
                 data.getCorrected().getPercentile(), data.getCorrected().getValue());
 
         responseTime.setLineColor(XChartSeriesColors.BLUE);
