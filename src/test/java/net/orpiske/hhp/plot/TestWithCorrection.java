@@ -16,6 +16,7 @@
 
 package net.orpiske.hhp.plot;
 
+import org.HdrHistogram.Histogram;
 import org.apache.commons.io.FilenameUtils;
 import org.junit.Test;
 
@@ -30,10 +31,11 @@ public class TestWithCorrection {
 
     private void plot(String fileName) throws Exception {
         // HDR Converter
-        HdrLogProcessorWrapper processorWrapper = new HdrLogProcessorWrapper(HdrLogProcessorWrapper.DEFAULT_UNIT_RATE);
+        HdrLogProcessorWrapper processorWrapper = new HdrLogProcessorWrapper();
 
+        Histogram histogram = Util.getAccumulated(new File(fileName));
 
-        String[] csvFiles = processorWrapper.convertLog(fileName, "10");
+        String[] csvFiles = processorWrapper.convertLog(histogram, fileName, 10);
         if (csvFiles == null || csvFiles.length != 2) {
             throw new Exception("Unexpected CSV files array size");
         }
@@ -49,7 +51,7 @@ public class TestWithCorrection {
 
         HdrPropertyWriter hdrPropertyWriter = new HdrPropertyWriter();
 
-        hdrPropertyWriter.postProcess(fileName);
+        hdrPropertyWriter.postProcess(histogram, fileName);
     }
 
 

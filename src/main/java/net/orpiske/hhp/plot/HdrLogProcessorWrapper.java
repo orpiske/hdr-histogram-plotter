@@ -16,12 +16,10 @@
 
 package net.orpiske.hhp.plot;
 
-import net.orpiske.hhp.plot.exceptions.HdrEmptyDataSet;
+import org.HdrHistogram.Histogram;
 import org.apache.commons.io.FilenameUtils;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
+import java.io.*;
 
 /**
  * The CustomHistogramLogProcessor does not _seem_ to provide an way to set its parameters. Therefore
@@ -29,24 +27,15 @@ import java.io.PrintStream;
  */
 public class HdrLogProcessorWrapper {
     public static final String DEFAULT_UNIT_RATE = "1";
-    private final String unitRatio;
 
-    public HdrLogProcessorWrapper(String unitRatio) {
-        this.unitRatio = unitRatio;
+    public HdrLogProcessorWrapper() {
     }
 
-    public String convertLog(final String path) throws IOException {
-        String args[] = {
-                "-i", path,
-                "-outputValueUnitRatio", unitRatio,
-                "-csv"
-        };
 
-        String csvFile = FilenameUtils.removeExtension(path) + ".csv";
-        PrintStream oldOut = System.out;
+    public String convertLog(final Histogram histogram, final String path) throws IOException {
+        final String csvFile = FilenameUtils.removeExtension(path) + ".csv";
 
-        try (FileOutputStream fileStream = new FileOutputStream(csvFile)) {
-            PrintStream newOutStream = new PrintStream(fileStream);
+        try (final PrintStream newOutStream = new PrintStream(new BufferedOutputStream(new FileOutputStream(csvFile)))) {
 
             /*
              * By default it prints on stdout. Since it does not seem to provide an easy
@@ -54,62 +43,19 @@ public class HdrLogProcessorWrapper {
              * CSV data.
              */
 
-            System.setOut(newOutStream);
+            histogram.outputPercentileDistribution(newOutStream, 5, 1.0,
+                    true);
 
-            CustomHistogramLogProcessor processor = new CustomHistogramLogProcessor(args);
-            processor.run();
-
-            /*
-             * Restore it after use
-             */
-
-        } finally {
-            System.setOut(oldOut);
         }
-
 
         return csvFile;
     }
 
-    public String[] convertLog(final String path, final String knownCO) throws IOException {
-        String uncorrectedCsv = convertLog(path);
+    public String[] convertLog(final Histogram histogram, final String path, long knownCO) throws IOException {
+        String uncorrectedCsv = convertLog(histogram, path);
 
-        if (uncorrectedCsv == null) {
-            throw new IOException("Converted uncorrected file was not found");
-        }
-
-
-        String args[] = {
-                "-i", path,
-                "-outputValueUnitRatio", unitRatio,
-                "-correctLogWithKnownCoordinatedOmission", knownCO,
-                "-csv"
-        };
-
-        String correctedCsv = FilenameUtils.removeExtension(path) + "-corrected.csv";
-        PrintStream oldOut = System.out;
-
-        try (FileOutputStream fileStream = new FileOutputStream(correctedCsv)) {
-            PrintStream newOutStream = new PrintStream(fileStream);
-
-            /*
-             * By default it prints on stdout. Since it does not seem to provide an easy
-             * way to save to a file via API, then just replace the stdout for saving the
-             * CSV data.
-             */
-
-            System.setOut(newOutStream);
-
-            CustomHistogramLogProcessor processor = new CustomHistogramLogProcessor(args);
-            processor.run();
-
-            /*
-             * Restore it after use
-             */
-
-        } finally {
-            System.setOut(oldOut);
-        }
+        Histogram corrected = histogram.copyCorrectedForCoordinatedOmission(knownCO);
+        String correctedCsv = convertLog(corrected, path);
 
 
         return new String[] {uncorrectedCsv, correctedCsv};

@@ -1,5 +1,7 @@
 package net.orpiske.hhp.plot;
 
+import org.HdrHistogram.Histogram;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -15,8 +17,8 @@ public interface HdrPostProcessor {
      * @param handler An histogram handler to read/save/etc the histogram data
      * @throws Exception implementation-specific
      */
-    default void postProcess(final File histogramFile, final HistogramHandler handler) throws Exception {
-        handler.handle((histogramFile));
+    default void postProcess(final Histogram histogram, final File histogramFile, final HistogramHandler handler) throws Exception {
+        handler.handle(histogram, histogramFile);
     }
 
 
@@ -25,12 +27,12 @@ public interface HdrPostProcessor {
      * @param histogramFile the file to post-process
      * @throws IOException implementation-specific
      */
-    void postProcess(final File histogramFile) throws Exception;
+    void postProcess(final Histogram histogram, final File histogramFile) throws Exception;
 
     /**
      * Save a summary of the analyzed rate data to a properties file named "latency.properties"
      * @param histogramFile the file to post-process
      * @throws IOException implementation-specific
      */
-    void postProcess(final String histogramFile) throws Exception;
+    void postProcess(final Histogram histogram, final String histogramFile) throws Exception;
 }

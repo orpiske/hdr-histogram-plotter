@@ -4,11 +4,7 @@ import org.HdrHistogram.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.time.Instant;
-import java.util.Objects;
+import java.io.*;
 import java.util.Properties;
 
 /**
@@ -60,56 +56,17 @@ public class HdrPropertyWriter implements HdrPostProcessor {
                 }
             }
 
-            try (FileOutputStream fos = new FileOutputStream(new File(histogramFile.getParentFile(), "latency.properties"))) {
+            File outFile = new File(histogramFile.getParentFile(), "latency.properties");
+            try (OutputStream fos = new BufferedOutputStream(new FileOutputStream(outFile))) {
                 prop.store(fos, "hdr-histogram-plotter");
             }
         }
 
         @Override
-        public void handle(final File histogramFile) throws Exception {
+        public void handle(final Histogram accumulatedHistogram, final File histogramFile) throws Exception {
             logger.trace("Writing properties to {}/latency.properties", histogramFile.getPath());
 
-            HistogramLogReader histogramLogReader = new HistogramLogReader(histogramFile);
-
-            Histogram accumulatedHistogram = null;
-            DoubleHistogram accumulatedDoubleHistogram = null;
-
-            int i = 0;
-            while (histogramLogReader.hasNext()) {
-                EncodableHistogram eh = histogramLogReader.nextIntervalHistogram();
-
-                if (i == 0) {
-                    if (eh instanceof DoubleHistogram) {
-                        accumulatedDoubleHistogram = ((DoubleHistogram) eh).copy();
-                        accumulatedDoubleHistogram.reset();
-                        accumulatedDoubleHistogram.setAutoResize(true);
-                    }
-                    else {
-                        accumulatedHistogram = ((Histogram) eh).copy();
-                        accumulatedHistogram.reset();
-                        accumulatedHistogram.setAutoResize(true);
-                    }
-                }
-
-                logger.debug("Processing histogram from point in time {} to {}",
-                        Instant.ofEpochMilli(eh.getStartTimeStamp()), Instant.ofEpochMilli(eh.getEndTimeStamp()));
-
-                if (eh instanceof DoubleHistogram) {
-                    Objects.requireNonNull(accumulatedDoubleHistogram).add((DoubleHistogram) eh);
-                }
-                else {
-                    Objects.requireNonNull(accumulatedHistogram).add((Histogram) eh);
-                }
-
-                i++;
-            }
-
-            if (accumulatedHistogram != null) {
-                doSave(histogramFile, accumulatedHistogram);
-            }
-            else {
-                doSave(histogramFile, Objects.requireNonNull(accumulatedDoubleHistogram));
-            }
+            doSave(histogramFile, accumulatedHistogram);
         }
     }
 
@@ -120,8 +77,8 @@ public class HdrPropertyWriter implements HdrPostProcessor {
      * @param histogramFile the file to post-process
      * @throws IOException if unable to save
      */
-    public void postProcess(final File histogramFile) throws Exception {
-        postProcess(histogramFile, new DefaultHistogramHandler());
+    public void postProcess(final Histogram histogram, final File histogramFile) throws Exception {
+        postProcess(histogram, histogramFile, new DefaultHistogramHandler());
     }
 
     /**
@@ -129,8 +86,8 @@ public class HdrPropertyWriter implements HdrPostProcessor {
      * @param histogramFile the file to post-process
      * @throws IOException if unable to save
      */
-    public void postProcess(final String histogramFile) throws Exception {
-        postProcess(new File(histogramFile));
+    public void postProcess(final Histogram histogram, final String histogramFile) throws Exception {
+        postProcess(histogram, new File(histogramFile));
     }
 
 

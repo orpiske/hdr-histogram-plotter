@@ -16,6 +16,7 @@
 
 package net.orpiske.hhp.plot;
 
+import org.HdrHistogram.Histogram;
 import org.apache.commons.io.FilenameUtils;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -28,10 +29,10 @@ public class SimpleTest {
 
     private void plot(String fileName) throws Exception {
         // HDR Converter
-        HdrLogProcessorWrapper processorWrapper = new HdrLogProcessorWrapper(HdrLogProcessorWrapper.DEFAULT_UNIT_RATE);
+        HdrLogProcessorWrapper processorWrapper = new HdrLogProcessorWrapper();
 
-
-        String csvFile = processorWrapper.convertLog(fileName);
+        Histogram histogram = Util.getAccumulated(new File(fileName));
+        String csvFile = processorWrapper.convertLog(histogram, fileName);
 
         // CSV Reader
         HdrReader reader = new HdrReader();
@@ -44,7 +45,7 @@ public class SimpleTest {
 
         HdrPropertyWriter hdrPropertyWriter = new HdrPropertyWriter();
 
-        hdrPropertyWriter.postProcess(fileName);
+        hdrPropertyWriter.postProcess(histogram, fileName);
     }
 
 

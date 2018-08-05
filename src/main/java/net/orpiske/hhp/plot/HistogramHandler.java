@@ -1,5 +1,7 @@
 package net.orpiske.hhp.plot;
 
+import org.HdrHistogram.Histogram;
+
 import java.io.File;
 
 /**
@@ -11,5 +13,5 @@ public interface HistogramHandler {
      * @param histogramFile the histogram file
      * @throws Exception Implementation specific
      */
-    void handle(final File histogramFile) throws Exception;
+    void handle(final Histogram histogram, final File histogramFile) throws Exception;
 }

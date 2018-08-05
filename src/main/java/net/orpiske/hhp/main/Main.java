@@ -17,8 +17,11 @@ package net.orpiske.hhp.main;
 
 import net.orpiske.hhp.plot.*;
 import net.orpiske.hhp.utils.Constants;
+import org.HdrHistogram.Histogram;
 import org.apache.commons.cli.*;
 import org.apache.commons.io.FilenameUtils;
+
+import java.io.File;
 
 public class Main {
     private static CommandLine cmdLine;
@@ -83,9 +86,11 @@ public class Main {
             // HDR Converter
             HdrLogProcessorWrapper processorWrapper;
 
-            processorWrapper = new HdrLogProcessorWrapper(unitRate);
+            processorWrapper = new HdrLogProcessorWrapper();
 
-            String csvFile = processorWrapper.convertLog(fileName);
+            Histogram histogram = Util.getAccumulated(new File(fileName));
+
+            String csvFile = processorWrapper.convertLog(histogram, fileName);
 
             // CSV Reader
             HdrReader reader = new HdrReader();
@@ -98,7 +103,7 @@ public class Main {
 
             HdrPropertyWriter hdrPropertyWriter = new HdrPropertyWriter();
 
-            hdrPropertyWriter.postProcess(fileName);
+            hdrPropertyWriter.postProcess(histogram, fileName);
 
             System.exit(0);
         } catch (Exception e) {
