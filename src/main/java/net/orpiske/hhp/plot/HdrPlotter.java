@@ -18,19 +18,22 @@ package net.orpiske.hhp.plot;
 
 
 import net.orpiske.hhp.plot.exceptions.HdrEmptyDataSet;
+import net.orpiske.hhp.plot.exceptions.HdrException;
 import org.knowm.xchart.BitmapEncoder;
 import org.knowm.xchart.XYChart;
 import org.knowm.xchart.XYSeries;
 import org.knowm.xchart.style.colors.XChartSeriesColors;
 import org.knowm.xchart.style.lines.SeriesLines;
 import org.knowm.xchart.style.markers.SeriesMarkers;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 
 /**
@@ -38,6 +41,7 @@ import java.util.concurrent.TimeUnit;
  */
 @SuppressWarnings("unused")
 public class HdrPlotter extends AbstractHdrPlotter {
+    private static final Logger logger = LoggerFactory.getLogger(HdrPlotter.class);
     private final String baseName;
 
     public HdrPlotter(final String baseName) {
@@ -53,8 +57,7 @@ public class HdrPlotter extends AbstractHdrPlotter {
     }
 
 
-    private void plotSingleAt(final List<Double> xData, final List<Double> yData, final Double min, final String fileName)
-            throws IOException {
+    private void plotSingleAt(final List<Double> xData, final List<Double> yData, final Double min, final String fileName) {
         XYChart chart = buildCommonChart();
 
         /*
@@ -72,22 +75,26 @@ public class HdrPlotter extends AbstractHdrPlotter {
         series.setMarker(SeriesMarkers.NONE);
         series.setLineStyle(SeriesLines.SOLID);
 
-        BitmapEncoder.saveBitmap(chart, fileName, BitmapEncoder.BitmapFormat.PNG);
+        try {
+            BitmapEncoder.saveBitmap(chart, fileName, BitmapEncoder.BitmapFormat.PNG);
+        } catch (IOException e) {
+            throw new HdrException("Unable to save bitmap", e);
+        }
     }
 
-    protected void plot99(final List<Double> xData, final List<Double> yData) throws IOException {
+    protected void plot99(final List<Double> xData, final List<Double> yData) {
         plotSingleAt(xData, yData, 99.0, baseName + "_99.png");
     }
 
-    protected void plot90(final List<Double> xData, final List<Double> yData) throws IOException {
+    protected void plot90(final List<Double> xData, final List<Double> yData) {
         plotSingleAt(xData, yData, 90.0, baseName + "_90.png");
     }
 
-    protected void plotAll(final List<Double> xData, final List<Double> yData) throws IOException {
+    protected void plotAll(final List<Double> xData, final List<Double> yData) {
         plotSingleAt(xData, yData, 5.0, baseName + "_all.png");
     }
 
-    protected void plotAllCo(HdrDataCO data, final Double min, final String fileName) throws IOException {
+    protected void plotAllCo(HdrDataCO data, final Double min, final String fileName) {
         // Create Chart
         XYChart chart = buildCommonChart();
 
@@ -115,21 +122,38 @@ public class HdrPlotter extends AbstractHdrPlotter {
         responseTime.setMarker(SeriesMarkers.NONE);
         responseTime.setLineStyle(SeriesLines.SOLID);
 
-        BitmapEncoder.saveBitmap(chart, fileName, BitmapEncoder.BitmapFormat.PNG);
+        try {
+            BitmapEncoder.saveBitmap(chart, fileName, BitmapEncoder.BitmapFormat.PNG);
+        } catch (IOException e) {
+            throw new HdrException("Unable to save bitmap", e);
+        }
     }
 
-    protected void plotAll(HdrDataCO data) throws IOException {
+    protected void plotAll(HdrDataCO data) {
         plotAllCo(data, 5.0, baseName + "_all.png");
     }
 
-    protected void plot90(HdrDataCO data) throws IOException {
+    protected void plot90(HdrDataCO data) {
         plotAllCo(data, 90.0, baseName + "_90.png");
     }
 
-    protected void plot99(HdrDataCO data) throws IOException {
+    protected void plot99(HdrDataCO data) {
         plotAllCo(data, 99.0, baseName + "_99.png");
     }
 
+
+    private Future<?> asyncPlot(BiConsumer<List<Double>, List<Double>> plotConsumer, final List<Double> xData,
+                             final List<Double> yData) {
+        ExecutorService plotterService = Executors.newCachedThreadPool();
+
+        return plotterService.submit(() -> plotConsumer.accept(xData, yData) );
+    }
+
+    private Future<?> asyncPlot(Consumer<HdrDataCO> plotConsumer, final HdrDataCO hdrDataCO) {
+        ExecutorService plotterService = Executors.newCachedThreadPool();
+
+        return plotterService.submit(() -> plotConsumer.accept(hdrDataCO) );
+    }
 
     /**
      * Plots the HDR histogram
@@ -148,72 +172,46 @@ public class HdrPlotter extends AbstractHdrPlotter {
         }
 
 
-        ExecutorService plotterServiceAll = Executors.newCachedThreadPool();
+        Future<?> plotterFuture = asyncPlot(this::plotAll, xData, yData);
 
-        plotterServiceAll.submit(() -> {
-            try {
-                plotAll(xData, yData);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } );
+        Future<?> plotter90Future = asyncPlot(this::plot90, xData, yData);
 
-        ExecutorService plotter90Service = Executors.newCachedThreadPool();
-        plotter90Service.submit(() -> {
-            try {
-                plot90(xData, yData);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } );
-
-        ExecutorService plotter99Service = Executors.newCachedThreadPool();
-        plotter99Service.submit(() -> {
-            try {
-                plot99(xData, yData);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } );
+        Future<?> plotter99Future = asyncPlot(this::plot99, xData, yData);
 
 
-        if (!plotterServiceAll.isTerminated()) {
-            System.out.println("Waiting for termination ...");
-            plotterServiceAll.shutdown();
-            try {
-                plotterServiceAll.awaitTermination(5, TimeUnit.SECONDS);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        try {
+            plotterFuture.get();
+            plotter90Future.get();
+            plotter99Future.get();
+        } catch (InterruptedException e) {
+            logger.error("Interrupted while plotting the data");
+        } catch (ExecutionException e) {
+            throw new HdrException(e);
         }
+    }
 
-        if (!plotter90Service.isTerminated()) {
-            System.out.println("Waiting for termination ...");
-            plotter90Service.shutdown();
-            try {
-                plotter90Service.awaitTermination(5, TimeUnit.SECONDS);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+    public void plot(final HdrDataCO hdrData) throws IOException, HdrEmptyDataSet {
+        Future<?> plotterFuture = asyncPlot(this::plotAll, hdrData);
 
-        if (!plotter99Service.isTerminated()) {
-            System.out.println("Waiting for termination ...");
-            plotter99Service.shutdown();
-            try {
-                plotter99Service.awaitTermination(5, TimeUnit.SECONDS);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        Future<?> plotter90Future = asyncPlot(this::plot90, hdrData);
+
+        Future<?> plotter99Future = asyncPlot(this::plot99, hdrData);
+
+        try {
+            plotterFuture.get();
+            plotter90Future.get();
+            plotter99Future.get();
+        } catch (InterruptedException e) {
+            logger.error("Interrupted while plotting the data");
+        } catch (ExecutionException e) {
+            throw new HdrException(e);
         }
     }
 
     @Override
     public void plot(final HdrData hdrData) throws IOException, HdrEmptyDataSet {
         if (hdrData instanceof HdrDataCO) {
-            plotAll((HdrDataCO) hdrData);
-            plot90((HdrDataCO) hdrData);
-            plot99((HdrDataCO) hdrData);
+            plot((HdrDataCO) hdrData);
         }
         else {
             plot(hdrData.getPercentile(), hdrData.getValue());
