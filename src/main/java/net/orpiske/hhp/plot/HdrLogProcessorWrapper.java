@@ -32,7 +32,7 @@ public class HdrLogProcessorWrapper {
     }
 
 
-    public String convertLog(final Histogram histogram, final String path) throws IOException {
+    public String convertLog(final Histogram histogram, final String path, double scalingRatio) throws IOException {
         final String csvFile = FilenameUtils.removeExtension(path) + ".csv";
 
         try (final PrintStream newOutStream = new PrintStream(new BufferedOutputStream(new FileOutputStream(csvFile)))) {
@@ -43,7 +43,7 @@ public class HdrLogProcessorWrapper {
              * CSV data.
              */
 
-            histogram.outputPercentileDistribution(newOutStream, 5, 1.0,
+            histogram.outputPercentileDistribution(newOutStream, 5, scalingRatio,
                     true);
 
         }
@@ -51,13 +51,24 @@ public class HdrLogProcessorWrapper {
         return csvFile;
     }
 
-    public String[] convertLog(final Histogram histogram, final String path, long knownCO) throws IOException {
+    public String convertLog(final Histogram histogram, final String path) throws IOException {
+        return convertLog(histogram, path, 1.0);
+
+    }
+
+    public String[] convertLog(final Histogram histogram, final String path, long knownCO, double scalingRatio) throws IOException {
         String uncorrectedCsv = convertLog(histogram, path);
 
         Histogram corrected = histogram.copyCorrectedForCoordinatedOmission(knownCO);
-        String correctedCsv = convertLog(corrected, path);
+        String correctedCsv = convertLog(corrected, path, scalingRatio);
 
 
         return new String[] {uncorrectedCsv, correctedCsv};
     }
+
+    public String[] convertLog(final Histogram histogram, final String path, long knownCO) throws IOException {
+        return convertLog(histogram, path, knownCO, 1.0);
+    }
+
+
 }
