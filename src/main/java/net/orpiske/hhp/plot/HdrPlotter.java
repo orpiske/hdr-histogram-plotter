@@ -28,6 +28,9 @@ import org.knowm.xchart.style.markers.SeriesMarkers;
 import java.awt.*;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -144,9 +147,65 @@ public class HdrPlotter extends AbstractHdrPlotter {
             throw new HdrEmptyDataSet("The 'Y' column data set is empty");
         }
 
-        plotAll(xData, yData);
-        plot90(xData, yData);
-        plot99(xData, yData);
+
+        ExecutorService plotterServiceAll = Executors.newCachedThreadPool();
+
+        plotterServiceAll.submit(() -> {
+            try {
+                plotAll(xData, yData);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } );
+
+        ExecutorService plotter90Service = Executors.newCachedThreadPool();
+        plotter90Service.submit(() -> {
+            try {
+                plot90(xData, yData);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } );
+
+        ExecutorService plotter99Service = Executors.newCachedThreadPool();
+        plotter99Service.submit(() -> {
+            try {
+                plot99(xData, yData);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } );
+
+
+        if (!plotterServiceAll.isTerminated()) {
+            System.out.println("Waiting for termination ...");
+            plotterServiceAll.shutdown();
+            try {
+                plotterServiceAll.awaitTermination(5, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (!plotter90Service.isTerminated()) {
+            System.out.println("Waiting for termination ...");
+            plotter90Service.shutdown();
+            try {
+                plotter90Service.awaitTermination(5, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (!plotter99Service.isTerminated()) {
+            System.out.println("Waiting for termination ...");
+            plotter99Service.shutdown();
+            try {
+                plotter99Service.awaitTermination(5, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override

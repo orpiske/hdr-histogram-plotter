@@ -20,7 +20,7 @@ package net.orpiske.hhp.plot.exceptions;
 /**
  * Empty data set exception
  */
-public class HdrEmptyDataSet extends Exception {
+public class HdrEmptyDataSet extends RuntimeException {
     public HdrEmptyDataSet() {
         super();
     }
