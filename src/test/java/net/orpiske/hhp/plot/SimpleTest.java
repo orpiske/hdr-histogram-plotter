@@ -24,11 +24,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.Properties;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 public class SimpleTest {
 
@@ -44,31 +40,14 @@ public class SimpleTest {
 
         HdrData hdrData = reader.read(csvFile);
 
-//        ExecutorService plotterService = Executors.newCachedThreadPool();
-//
-//        plotterService.submit(() -> {
-//                    try {
-                        HdrPlotter plotter = new HdrPlotter(FilenameUtils.removeExtension(fileName));
+        HdrPlotter plotter = new HdrPlotter(FilenameUtils.removeExtension(fileName));
 
-                        plotter.plot(hdrData);
-//                        System.out.println("Completed plotting");
-//                    } catch (IOException e) {
-//                        fail("I/O error while plotting the data");
-//                    } catch (HdrEmptyDataSet hdrEmptyDataSet) {
-//                        fail("Unexpected empty data set");
-//                    }
-//                }
-//        );
+        plotter.plot(hdrData);
 
         HdrPropertyWriter hdrPropertyWriter = new HdrPropertyWriter();
 
         hdrPropertyWriter.postProcess(histogram, fileName);
 
-//        if (!plotterService.isTerminated()) {
-//            System.out.println("Waiting for termination ...");
-//            plotterService.shutdown();
-//            plotterService.awaitTermination(5, TimeUnit.SECONDS);
-//        }
     }
 
 
