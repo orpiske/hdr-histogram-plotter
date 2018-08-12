@@ -90,12 +90,7 @@ public class Main {
 
             Histogram histogram = Util.getAccumulated(new File(fileName));
 
-            String csvFile = processorWrapper.convertLog(histogram, fileName);
-
-            // CSV Reader
-            HdrReader reader = new HdrReader();
-
-            HdrData hdrData = reader.read(csvFile);
+            HdrData hdrData = processorWrapper.convertLog(histogram, fileName);
 
             // HdrPlotter
             HdrPlotter plotter = new HdrPlotter(FilenameUtils.removeExtension(fileName), timeUnit);

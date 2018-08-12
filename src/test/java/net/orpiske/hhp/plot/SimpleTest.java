@@ -16,7 +16,6 @@
 
 package net.orpiske.hhp.plot;
 
-import net.orpiske.hhp.plot.exceptions.HdrEmptyDataSet;
 import org.HdrHistogram.Histogram;
 import org.apache.commons.io.FilenameUtils;
 import static org.junit.Assert.*;
@@ -29,16 +28,12 @@ import java.util.Properties;
 public class SimpleTest {
 
     private void plot(String fileName) throws Exception {
-        // HDR Converter
+        // HDR Log Reader
         HdrLogProcessorWrapper processorWrapper = new HdrLogProcessorWrapper();
 
         Histogram histogram = Util.getAccumulated(new File(fileName));
-        String csvFile = processorWrapper.convertLog(histogram, fileName);
 
-        // CSV Reader
-        HdrReader reader = new HdrReader();
-
-        HdrData hdrData = reader.read(csvFile);
+        HdrData hdrData = processorWrapper.convertLog(histogram, fileName);
 
         HdrPlotter plotter = new HdrPlotter(FilenameUtils.removeExtension(fileName));
 
@@ -56,11 +51,6 @@ public class SimpleTest {
         String fileName = this.getClass().getResource("file-01.hdr").getPath();
         plot(fileName);
 
-        String csvFilename = FilenameUtils.removeExtension(fileName) + ".csv";
-
-        File csvFile = new File(csvFilename);
-        assertTrue(csvFile.exists());
-        assertTrue(csvFile.isFile());
 
         String pngFilename99 = FilenameUtils.removeExtension(fileName) + "_99.png";
 
@@ -84,7 +74,6 @@ public class SimpleTest {
         File propertiesFile = new File(pngFileAll.getParentFile(), "latency.properties");
         assertTrue(propertiesFile.exists());
         assertTrue(propertiesFile.isFile());
-
 
         Properties ps = new Properties();
 

@@ -35,19 +35,14 @@ public class TestWithCorrection {
 
         Histogram histogram = Util.getAccumulated(new File(fileName));
 
-        String[] csvFiles = processorWrapper.convertLog(histogram, fileName, 10);
-        if (csvFiles == null || csvFiles.length != 2) {
-            throw new Exception("Unexpected CSV files array size");
+        HdrData[] hdrData = processorWrapper.convertLog(histogram, fileName, 10);
+        if (hdrData == null || hdrData.length != 2) {
+            throw new Exception("Unexpected array size");
         }
-
-        // CSV Reader
-        HdrReader reader = new HdrReader();
-
-        HdrData hdrData = reader.read(csvFiles[0], csvFiles[1]);
 
         // HdrPlotter
         HdrPlotter plotter = new HdrPlotter(FilenameUtils.removeExtension(fileName));
-        plotter.plot(hdrData);
+        plotter.plot(hdrData[0]);
 
         HdrPropertyWriter hdrPropertyWriter = new HdrPropertyWriter();
 
@@ -60,12 +55,6 @@ public class TestWithCorrection {
         String fileName = this.getClass().getResource("file-02.hdr").getPath();
         plot(fileName);
 
-        String csvFilename = FilenameUtils.removeExtension(fileName) + ".csv";
-
-        File csvFile = new File(csvFilename);
-        assertTrue(csvFile.exists());
-        assertTrue(csvFile.isFile());
-
         String pngFilename99 = FilenameUtils.removeExtension(fileName) + "_99.png";
 
         File pngFile99 = new File(pngFilename99);
@@ -77,7 +66,7 @@ public class TestWithCorrection {
         File pngFile90 = new File(pngFilename90);
         assertTrue(pngFile90.exists());
         assertTrue(pngFile90.isFile());
-//
+
         String pngFilenameAll = FilenameUtils.removeExtension(fileName) + "_all.png";
 
         File pngFileAll = new File(pngFilenameAll);

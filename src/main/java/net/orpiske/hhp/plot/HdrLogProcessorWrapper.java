@@ -17,56 +17,47 @@
 package net.orpiske.hhp.plot;
 
 import org.HdrHistogram.Histogram;
-import org.apache.commons.io.FilenameUtils;
 
 import java.io.*;
 
-/**
- * The CustomHistogramLogProcessor does not _seem_ to provide an way to set its parameters. Therefore
- * just wrap it over its main method.
- */
+
 public class HdrLogProcessorWrapper {
     public static final String DEFAULT_UNIT_RATE = "1";
 
     public HdrLogProcessorWrapper() {
     }
 
-
-    public String convertLog(final Histogram histogram, final String path, double scalingRatio) throws IOException {
-        final String csvFile = FilenameUtils.removeExtension(path) + ".csv";
-
-        try (final PrintStream newOutStream = new PrintStream(new BufferedOutputStream(new FileOutputStream(csvFile)))) {
-
-            /*
-             * By default it prints on stdout. Since it does not seem to provide an easy
-             * way to save to a file via API, then just replace the stdout for saving the
-             * CSV data.
-             */
-
-            histogram.outputPercentileDistribution(newOutStream, 5, scalingRatio,
-                    true);
-
-        }
-
-        return csvFile;
+    private void addHdr(HdrData hdrData, Double percentile, Double value) {
+        hdrData.getPercentile().add(percentile);
+        hdrData.getValue().add(value);
     }
 
-    public String convertLog(final Histogram histogram, final String path) throws IOException {
+
+    public HdrData convertLog(final Histogram histogram, final String path, double scalingRatio) throws IOException {
+        HdrData ret = new HdrData();
+
+        histogram.recordedValues().forEach(value -> addHdr(ret, value.getPercentile(),
+                value.getDoubleValueIteratedTo()));
+
+        return ret;
+    }
+
+    public HdrData convertLog(final Histogram histogram, final String path) throws IOException {
         return convertLog(histogram, path, 1.0);
 
     }
 
-    public String[] convertLog(final Histogram histogram, final String path, long knownCO, double scalingRatio) throws IOException {
-        String uncorrectedCsv = convertLog(histogram, path);
+    public HdrData[] convertLog(final Histogram histogram, final String path, long knownCO, double scalingRatio) throws IOException {
+        HdrData uncorrectedCsv = convertLog(histogram, path);
 
         Histogram corrected = histogram.copyCorrectedForCoordinatedOmission(knownCO);
-        String correctedCsv = convertLog(corrected, path, scalingRatio);
+        HdrData correctedCsv = convertLog(corrected, path, scalingRatio);
 
 
-        return new String[] {uncorrectedCsv, correctedCsv};
+        return new HdrData[] {uncorrectedCsv, correctedCsv};
     }
 
-    public String[] convertLog(final Histogram histogram, final String path, long knownCO) throws IOException {
+    public HdrData[] convertLog(final Histogram histogram, final String path, long knownCO) throws IOException {
         return convertLog(histogram, path, knownCO, 1.0);
     }
 
