@@ -41,12 +41,17 @@ public class HdrLogProcessorWrapper {
         return ret;
     }
 
-    public HdrData[] convertLog(final Histogram histogram, long knownCO) {
-        HdrData uncorrectedCsv = convertLog(histogram);
+    public HdrDataCO convertLog(final Histogram histogram, long knownCO) {
+        HdrDataCO ret = new HdrDataCO();
+
+        histogram.recordedValues().forEach(value -> addHdr(ret, value.getPercentile(),
+                value.getDoubleValueIteratedTo()));
 
         Histogram corrected = histogram.copyCorrectedForCoordinatedOmission(knownCO);
-        HdrData correctedCsv = convertLog(corrected);
+        HdrData correctedData = convertLog(corrected);
 
-        return new HdrData[] {uncorrectedCsv, correctedCsv};
+        ret.setCorrected(correctedData);
+
+        return ret;
     }
 }

@@ -20,7 +20,14 @@ package net.orpiske.hhp.plot;
  * A container for the HDR Histogram data being processed
  */
 public class HdrDataCO extends HdrData {
-    private HdrData corrected = new HdrData();
+    private HdrData corrected;
+
+    public HdrDataCO() {
+    }
+
+    public void setCorrected(HdrData corrected) {
+        this.corrected = corrected;
+    }
 
     public HdrData getCorrected() {
         return corrected;
