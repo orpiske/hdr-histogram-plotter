@@ -33,7 +33,7 @@ public class SimpleTest {
 
         Histogram histogram = Util.getAccumulated(new File(fileName));
 
-        HdrData hdrData = processorWrapper.convertLog(histogram, fileName);
+        HdrData hdrData = processorWrapper.convertLog(histogram);
 
         HdrPlotter plotter = new HdrPlotter(FilenameUtils.removeExtension(fileName));
 

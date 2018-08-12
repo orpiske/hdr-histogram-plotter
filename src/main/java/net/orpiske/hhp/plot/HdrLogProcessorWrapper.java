@@ -27,13 +27,12 @@ public class HdrLogProcessorWrapper {
     public HdrLogProcessorWrapper() {
     }
 
-    private void addHdr(HdrData hdrData, Double percentile, Double value) {
-        hdrData.getPercentile().add(percentile);
-        hdrData.getValue().add(value);
+    private void addHdr(HdrData hdrData, double percentile, double value) {
+        hdrData.add(new HdrRecord(percentile, value));
     }
 
 
-    public HdrData convertLog(final Histogram histogram, final String path, double scalingRatio) throws IOException {
+    public HdrData convertLog(final Histogram histogram) {
         HdrData ret = new HdrData();
 
         histogram.recordedValues().forEach(value -> addHdr(ret, value.getPercentile(),
@@ -42,24 +41,12 @@ public class HdrLogProcessorWrapper {
         return ret;
     }
 
-    public HdrData convertLog(final Histogram histogram, final String path) throws IOException {
-        return convertLog(histogram, path, 1.0);
-
-    }
-
-    public HdrData[] convertLog(final Histogram histogram, final String path, long knownCO, double scalingRatio) throws IOException {
-        HdrData uncorrectedCsv = convertLog(histogram, path);
+    public HdrData[] convertLog(final Histogram histogram, long knownCO) {
+        HdrData uncorrectedCsv = convertLog(histogram);
 
         Histogram corrected = histogram.copyCorrectedForCoordinatedOmission(knownCO);
-        HdrData correctedCsv = convertLog(corrected, path, scalingRatio);
-
+        HdrData correctedCsv = convertLog(corrected);
 
         return new HdrData[] {uncorrectedCsv, correctedCsv};
     }
-
-    public HdrData[] convertLog(final Histogram histogram, final String path, long knownCO) throws IOException {
-        return convertLog(histogram, path, knownCO, 1.0);
-    }
-
-
 }

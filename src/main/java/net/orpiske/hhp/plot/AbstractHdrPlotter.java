@@ -8,7 +8,6 @@ import org.knowm.xchart.style.colors.ChartColor;
 
 import java.awt.*;
 import java.io.IOException;
-import java.util.List;
 
 /**
  * A base class for HDR plotters

@@ -18,19 +18,23 @@ package net.orpiske.hhp.plot;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * A container for the HDR Histogram data being processed
  */
 public class HdrData {
-    private final List<Double> value = new LinkedList<>();
-    private final List<Double> percentile = new LinkedList<>();
+    private final List<HdrRecord> records = new LinkedList<>();
 
     public List<Double> getValue() {
-        return value;
+        return records.stream().mapToDouble(HdrRecord::getValue).boxed().collect(Collectors.toList());
     }
 
     public List<Double> getPercentile() {
-        return percentile;
+        return records.stream().mapToDouble(HdrRecord::getPercentile).boxed().collect(Collectors.toList());
+    }
+
+    public void add(final HdrRecord hdrRecord) {
+        records.add(hdrRecord);
     }
 }

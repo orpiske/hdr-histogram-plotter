@@ -35,7 +35,7 @@ public class TestWithCorrection {
 
         Histogram histogram = Util.getAccumulated(new File(fileName));
 
-        HdrData[] hdrData = processorWrapper.convertLog(histogram, fileName, 10);
+        HdrData[] hdrData = processorWrapper.convertLog(histogram, 10);
         if (hdrData == null || hdrData.length != 2) {
             throw new Exception("Unexpected array size");
         }

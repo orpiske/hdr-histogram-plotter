@@ -90,7 +90,7 @@ public class Main {
 
             Histogram histogram = Util.getAccumulated(new File(fileName));
 
-            HdrData hdrData = processorWrapper.convertLog(histogram, fileName);
+            HdrData hdrData = processorWrapper.convertLog(histogram);
 
             // HdrPlotter
             HdrPlotter plotter = new HdrPlotter(FilenameUtils.removeExtension(fileName), timeUnit);
