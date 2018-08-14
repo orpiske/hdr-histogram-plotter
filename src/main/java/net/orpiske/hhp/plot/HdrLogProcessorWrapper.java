@@ -18,13 +18,17 @@ package net.orpiske.hhp.plot;
 
 import org.HdrHistogram.Histogram;
 
-import java.io.*;
-
 
 public class HdrLogProcessorWrapper {
-    public static final String DEFAULT_UNIT_RATE = "1";
+    private final double unitRatio;
 
     public HdrLogProcessorWrapper() {
+        this(1.0);
+    }
+
+
+    public HdrLogProcessorWrapper(double unitRatio) {
+        this.unitRatio = unitRatio;
     }
 
     private void addHdr(HdrData hdrData, double percentile, double value) {
@@ -36,7 +40,7 @@ public class HdrLogProcessorWrapper {
         HdrData ret = new HdrData();
 
         histogram.recordedValues().forEach(value -> addHdr(ret, value.getPercentile(),
-                value.getDoubleValueIteratedTo()));
+                value.getDoubleValueIteratedTo() / unitRatio));
 
         return ret;
     }

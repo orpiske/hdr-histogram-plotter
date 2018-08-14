@@ -27,7 +27,7 @@ public class Main {
     private static CommandLine cmdLine;
     private static String fileName;
     private static String timeUnit;
-    private static String unitRate;
+    private static double unitRate = 1.0;
     private static String knownCO;
 
     /**
@@ -73,9 +73,9 @@ public class Main {
             help(options, -1);
         }
 
-        unitRate = cmdLine.getOptionValue('r');
-        if (unitRate == null) {
-            unitRate = HdrLogProcessorWrapper.DEFAULT_UNIT_RATE;
+        String unitRateStr = cmdLine.getOptionValue('r');
+        if (unitRateStr != null) {
+            unitRate = Double.parseDouble(unitRateStr);
         }
     }
 
@@ -98,7 +98,7 @@ public class Main {
 
             HdrPropertyWriter hdrPropertyWriter = new HdrPropertyWriter();
 
-            hdrPropertyWriter.postProcess(histogram, fileName);
+            hdrPropertyWriter.postProcess(histogram, fileName, new HdrPropertyWriter.DefaultHistogramHandler(unitRate));
 
             System.exit(0);
         } catch (Exception e) {
