@@ -35,14 +35,14 @@ public class TestWithCorrection {
 
         Histogram histogram = Util.getAccumulated(new File(fileName));
 
-        HdrData[] hdrData = processorWrapper.convertLog(histogram, 10);
-        if (hdrData == null || hdrData.length != 2) {
+        HdrDataCO hdrData = processorWrapper.convertLog(histogram, 10);
+        if (hdrData == null) {
             throw new Exception("Unexpected array size");
         }
 
         // HdrPlotter
         HdrPlotter plotter = new HdrPlotter(FilenameUtils.removeExtension(fileName));
-        plotter.plot(hdrData[0]);
+        plotter.plot(hdrData);
 
         HdrPropertyWriter hdrPropertyWriter = new HdrPropertyWriter();
 
