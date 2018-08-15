@@ -19,6 +19,7 @@ package net.orpiske.hhp.plot;
 import org.HdrHistogram.Histogram;
 
 
+@Deprecated
 public class HdrLogProcessorWrapper {
     private final double unitRatio;
 

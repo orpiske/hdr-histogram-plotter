@@ -12,6 +12,7 @@ import java.time.Instant;
 import java.util.Objects;
 import java.io.File;
 
+@Deprecated
 public class Util {
     private static final Logger logger = LoggerFactory.getLogger(Util.class);
 

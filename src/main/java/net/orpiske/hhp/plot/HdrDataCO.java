@@ -19,6 +19,7 @@ package net.orpiske.hhp.plot;
 /**
  * A container for the HDR Histogram data being processed
  */
+@Deprecated
 public class HdrDataCO extends HdrData {
     private HdrData corrected;
 

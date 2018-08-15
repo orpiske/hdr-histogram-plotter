@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 /**
  * A container for the HDR Histogram data being processed
  */
+@Deprecated
 public class HdrData {
     private final List<HdrRecord> records = new LinkedList<>();
 
